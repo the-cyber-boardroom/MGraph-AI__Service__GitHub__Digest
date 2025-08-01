@@ -57,3 +57,12 @@ jobs:
         uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/pypi__twine__publish@dev
     needs:
       - increment-tag
+
+  aws_deploy_dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy Service Lambda function (dev)
+        uses: ./.github/actions/aws__deploy__dev
+#    needs:
+#      - increment-tag

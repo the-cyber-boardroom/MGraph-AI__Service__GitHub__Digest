@@ -1,0 +1,22 @@
+name: "aws__deploy__dev"
+description: "aws__deploy__dev"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
+
+    - name: Install python dependencies
+      shell: bash
+      run: |
+        pip install -r requirements-test.txt
+
+    - name: Deploy Service to dev lambda function
+      shell: bash
+      run: |         
+        pytest -rs ./tests/deploy_aws/test_Deploy__Service__GitHub__DIgest__to__dev.py
