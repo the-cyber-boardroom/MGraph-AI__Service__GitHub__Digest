@@ -1,14 +1,15 @@
-from unittest                                                   import TestCase
-from fastapi                                                    import FastAPI
-from osbot_fast_api.api.Fast_API                                import ENV_VAR__FAST_API__AUTH__API_KEY__NAME, ENV_VAR__FAST_API__AUTH__API_KEY__VALUE
-from osbot_local_stack.local_stack.Local_Stack                  import Local_Stack
-from osbot_utils.utils.Env                                      import get_env
-from starlette.testclient                                       import TestClient
-from osbot_fast_api_serverless.fast_api.routes.Routes__Info     import ROUTES_PATHS__INFO
-from osbot_fast_api_serverless.utils.testing.skip_tests         import skip__if_not__in_github_actions
-from mgraph_ai_service_github_digest.fast_api.Service__Fast_API import Service__Fast_API
-from mgraph_ai_service_github_digest.utils.Version              import version__mgraph_ai_service_github_digest
-from tests.unit.Service__Fast_API__Test_Objs                    import setup__service_fast_api_test_objs, Service__Fast_API__Test_Objs
+from unittest                                                               import TestCase
+from fastapi                                                                import FastAPI
+from osbot_fast_api.api.Fast_API                                            import ENV_VAR__FAST_API__AUTH__API_KEY__NAME, ENV_VAR__FAST_API__AUTH__API_KEY__VALUE
+from osbot_local_stack.local_stack.Local_Stack                              import Local_Stack
+from osbot_utils.utils.Env                                                  import get_env
+from starlette.testclient                                                   import TestClient
+from osbot_fast_api_serverless.fast_api.routes.Routes__Info                 import ROUTES_PATHS__INFO
+from osbot_fast_api_serverless.utils.testing.skip_tests                     import skip__if_not__in_github_actions
+from mgraph_ai_service_github_digest.fast_api.Service__Fast_API             import Service__Fast_API
+from mgraph_ai_service_github_digest.fast_api.routes.Routes__GitHub__Digest import ROUTES_PATHS__GIT_HUB__DIGEST
+from mgraph_ai_service_github_digest.utils.Version                          import version__mgraph_ai_service_github_digest
+from tests.unit.Service__Fast_API__Test_Objs                                import setup__service_fast_api_test_objs, Service__Fast_API__Test_Objs, TEST_API_KEY__NAME
 
 
 class test_Service__Fast_API__client(TestCase):
@@ -16,9 +17,10 @@ class test_Service__Fast_API__client(TestCase):
     @classmethod
     def setUpClass(cls):
         with setup__service_fast_api_test_objs() as _:
-            cls.service_fast_api_test_objs = _
-            cls.fast_api                    = cls.service_fast_api_test_objs.fast_api
-            cls .client                     = cls.service_fast_api_test_objs.fast_api__client
+            cls.service_fast_api_test_objs         = _
+            cls.fast_api                           = cls.service_fast_api_test_objs.fast_api
+            cls.client                             = cls.service_fast_api_test_objs.fast_api__client
+            cls.client.headers[TEST_API_KEY__NAME] = ''     # todo: refactor this so that we always have the header set (at the moment this is picking it up from the test_Routes__GitHub__Digest test)
 
     def test__init__(self):
         with self.service_fast_api_test_objs as _:
@@ -36,7 +38,7 @@ class test_Service__Fast_API__client(TestCase):
         auth_key_value      = get_env(ENV_VAR__FAST_API__AUTH__API_KEY__VALUE)
         headers             = {auth_key_name: auth_key_value}
 
-        response__no_auth   = self.client.get(url=path                 )
+        response__no_auth   = self.client.get(url=path, headers = {}   )
         response__with_auth = self.client.get(url=path, headers=headers)
 
         assert response__no_auth.status_code == 401
@@ -57,5 +59,6 @@ class test_Service__Fast_API__client(TestCase):
 
 
     def test__config_fast_api_routes(self):
-        assert self.fast_api.routes_paths() == ROUTES_PATHS__INFO
+        assert self.fast_api.routes_paths() == sorted(ROUTES_PATHS__INFO            +
+                                                      ROUTES_PATHS__GIT_HUB__DIGEST )
 
