@@ -3,10 +3,9 @@ from osbot_aws.testing.skip_tests                                               
 from osbot_fast_api_serverless.deploy.Deploy__Serverless__Fast_API              import DEFAULT__ERROR_MESSAGE__WHEN_FAST_API_IS_OK
 from mgraph_ai_service_github_digest.config                                     import LAMBDA_DEPENDENCIES__FAST_API_SERVERLESS
 from mgraph_ai_service_github_digest.utils.Version                              import version__mgraph_ai_service_github_digest
-from Service__Fast_API__Test_Objs                                               import setup_local_stack
 from osbot_utils.utils.Misc                                                     import list_set
-
-from mgraph_ai_service_github_digest.utils.deploy.Deploy__Service import Deploy__Service
+from mgraph_ai_service_github_digest.utils.deploy.Deploy__Service               import Deploy__Service
+from tests.unit.Service__Fast_API__Test_Objs                                    import setup_local_stack
 
 
 class test_Deploy__Web_Content_Filtering__to__dev(TestCase):

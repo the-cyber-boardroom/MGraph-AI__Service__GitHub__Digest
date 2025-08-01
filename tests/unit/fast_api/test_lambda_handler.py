@@ -3,7 +3,7 @@ import types
 import pytest
 from unittest                                                import TestCase
 from osbot_utils.utils.Json                                  import str_to_json
-from Service__Fast_API__Test_Objs                            import setup_local_stack
+from tests.unit.Service__Fast_API__Test_Objs                 import setup_local_stack
 from mgraph_ai_service_github_digest.fast_api.lambda_handler import run
 
 
