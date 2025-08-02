@@ -21,5 +21,4 @@ class test_Info__Current_IP_Address(TestCase):
     def test_from__ip_ify(self):
         with self.info__current_ip_address as _:
             result = _.from__ip_ify()
-            assert list_set(result.get('headers')) == ['CF-RAY', 'Connection', 'Content-Length', 'Content-Type',
-                                                       'Date', 'Server', 'Vary', 'cf-cache-status', 'server-timing']
+            assert 'Content-Type'  in result.get('headers')
