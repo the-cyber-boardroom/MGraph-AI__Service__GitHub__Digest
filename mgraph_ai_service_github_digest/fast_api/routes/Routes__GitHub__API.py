@@ -1,6 +1,5 @@
-from osbot_fast_api.api.Fast_API_Routes import Fast_API_Routes
-
-from mgraph_ai_service_github_digest.github.GitHub__API import GitHub__API
+from osbot_fast_api.api.Fast_API_Routes                         import Fast_API_Routes
+from mgraph_ai_service_github_digest.service.github.GitHub__API import GitHub__API
 
 ROUTES_PATHS__GIT_HUB__API = ['/github-api/rate-limit']
 
