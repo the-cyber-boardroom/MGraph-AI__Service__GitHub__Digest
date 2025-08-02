@@ -1,5 +1,4 @@
 from osbot_fast_api.api.Fast_API_Routes                                     import Fast_API_Routes
-from osbot_utils.utils.Http                                                 import GET
 from mgraph_ai_service_github_digest.service.info.Info__Current_IP_Address  import Info__Current_IP_Address
 from mgraph_ai_service_github_digest.utils.Version                          import version__mgraph_ai_service_github_digest
 
