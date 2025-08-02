@@ -24,4 +24,4 @@ class IP_Data(Type_Safe):                                               # todo: 
     @type_safe
     def ip_address__details(self, ip_address: Safe_Str__IP_Address):
         with self.http_request as _:
-            return _.get(ip_address, params= dict(IP_DATA__API_NAME = self.api_key()))
+            return _.get(ip_address, params={IP_DATA__API_NAME : self.api_key()})
