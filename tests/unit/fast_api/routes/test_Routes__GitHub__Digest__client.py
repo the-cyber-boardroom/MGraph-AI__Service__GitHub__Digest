@@ -2,7 +2,7 @@ from unittest                                import TestCase
 from tests.unit.Service__Fast_API__Test_Objs import setup__service_fast_api_test_objs, TEST_API_KEY__NAME, TEST_API_KEY__VALUE
 
 
-class test_Routes__GitHub__Digest(TestCase):
+class test_Routes__GitHub__Digest__client(TestCase):
     @classmethod
     def setUpClass(cls):
         with setup__service_fast_api_test_objs() as _:

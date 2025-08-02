@@ -5,7 +5,7 @@ from osbot_fast_api_serverless.utils.Version                       import versio
 from mgraph_ai_service_github_digest.utils.deploy.Deploy__Service  import Deploy__Service
 
 
-class test_Deploy__Web_Content_Filtering__to__to__dev__qa__prod(TestCase):
+class test_Deploy__Service__to__dev__qa__prod(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.deploy_fast_api__dev  = Deploy__Service(stage = 'dev')

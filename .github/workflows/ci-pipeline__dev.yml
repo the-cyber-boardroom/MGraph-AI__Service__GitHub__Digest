@@ -65,7 +65,7 @@ jobs:
 
       - name: Git Update Current Branch
         uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/git__update_branch@dev
-        
+
       - name: Deploy Service Lambda function (dev)
         uses: ./.github/actions/aws__deploy__dev
         env:
