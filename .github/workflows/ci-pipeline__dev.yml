@@ -43,21 +43,6 @@ jobs:
     needs:
       - run-tests
 
-  publish-to-pypi:
-    if: False
-    name: "Publish to: PYPI"
-    permissions:
-      id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Git Update Current Branch
-        uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/git__update_branch@dev
-      - name: publish-to-pypi
-        uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/pypi__twine__publish@dev
-    needs:
-      - increment-tag
-
   aws_deploy_dev:
     runs-on: ubuntu-latest
     steps:

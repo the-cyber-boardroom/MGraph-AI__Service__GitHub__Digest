@@ -1,7 +1,6 @@
 from unittest                                                               import TestCase
 from osbot_utils.utils.Misc                                                 import list_set
 from mgraph_ai_service_github_digest.service.info.Info__Current_IP_Address  import Info__Current_IP_Address
-from osbot_utils.utils.Dev import pprint
 
 class test_Info__Current_IP_Address(TestCase):
     @classmethod
