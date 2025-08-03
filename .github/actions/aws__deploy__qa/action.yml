@@ -1,5 +1,5 @@
-name: "aws__deploy__main"
-description: "aws__deploy__main"
+name: "aws__deploy__qa"
+description: "aws__deploy__qa"
 
 runs:
   using: "composite"
@@ -20,7 +20,7 @@ runs:
     - name: Git Update Current Branch
       uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/git__update_branch@dev
 
-    - name: Deploy Service to main lambda function
+    - name: Deploy Service to qa lambda function
       shell: bash
       run: |         
-        pytest -rs ./tests/deploy_aws/test_Deploy__Service__to__main.py
+        pytest -rs ./tests/deploy_aws/test_Deploy__Service__to__qa.py
