@@ -31,7 +31,7 @@ class GitHub__API(Type_Safe):
 
     @type_safe
     def issues(self, owner: Safe_Id , repo: Safe_Id):
-        path = f'/repos/{owner}/{repo}/commits'
+        path = f'/repos/{owner}/{repo}/issues'
         return self.http_request.get(path)
 
     @type_safe
