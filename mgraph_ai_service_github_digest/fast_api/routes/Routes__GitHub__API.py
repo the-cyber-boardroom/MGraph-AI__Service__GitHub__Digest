@@ -3,13 +3,13 @@ from osbot_utils.helpers.Safe_Id                                import Safe_Id
 from mgraph_ai_service_github_digest.service.github.GitHub__API import GitHub__API
 
 TAG__GITHUB_API            = 'github-api'
-ROUTES_PATHS__GIT_HUB__API = [f'/{TAG__GITHUB_API}/apis-available'        ,
-                              f'/{TAG__GITHUB_API}/rate-limit'            ,
-                              f'/{TAG__GITHUB_API}/repository'            ,
-                              f'/{TAG__GITHUB_API}/repository-commits'    ,
-                              f'/{TAG__GITHUB_API}/repository-issues'     ,
-                              f'/{TAG__GITHUB_API}/repository-files-names'
-                              f'/{TAG__GITHUB_API}/repository-text-files' ,
+ROUTES_PATHS__GIT_HUB__API = [f'/{TAG__GITHUB_API}/apis-available'         ,
+                              f'/{TAG__GITHUB_API}/rate-limit'             ,
+                              f'/{TAG__GITHUB_API}/repository'             ,
+                              f'/{TAG__GITHUB_API}/repository-commits'     ,
+                              f'/{TAG__GITHUB_API}/repository-issues'      ,
+                              f'/{TAG__GITHUB_API}/repository-files-names' ,
+                              f'/{TAG__GITHUB_API}/repository-text-files'  ,
                               ]
 
 GIT_HUB__API__DEFAULT__OWNER = 'owasp-sbot'
