@@ -1,7 +1,4 @@
 from unittest                                                            import TestCase
-
-from osbot_utils.utils.Dev import pprint
-
 from mgraph_ai_service_github_digest.fast_api.routes.Routes__GitHub__API import Routes__GitHub__API
 
 

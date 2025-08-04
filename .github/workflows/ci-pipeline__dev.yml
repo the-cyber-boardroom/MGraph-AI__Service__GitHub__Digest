@@ -60,7 +60,7 @@ jobs:
           FAST_API__AUTH__API_KEY__VALUE : ${{ secrets.FAST_API__AUTH__API_KEY__VALUE }}
           IP_DATA__API_KEY               : ${{ secrets.IP_DATA__API_KEY               }}
         with:
-          target  : TARGET_DEPLOY
+          target  : ${{ env.TARGET_DEPLOY }}
 
     needs:
       - increment-tag
