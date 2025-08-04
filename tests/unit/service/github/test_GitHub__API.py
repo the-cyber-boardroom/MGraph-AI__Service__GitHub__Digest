@@ -1,11 +1,11 @@
 from unittest                                                   import TestCase
-
-from osbot_utils.helpers.Safe_Id import Safe_Id
-from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import file_contents
-from osbot_utils.utils.Functions import python_file
-from osbot_utils.utils.Misc import list_set, bytes_to_str
-from osbot_utils.utils.Zip import zip_bytes__file_list
+from osbot_utils.helpers.Safe_Id                                import Safe_Id
+from osbot_utils.helpers.ast.Ast_Load                           import Ast_Load
+from osbot_utils.helpers.safe_str.Safe_Str__File__Path          import Safe_Str__File__Path
+from osbot_utils.utils.Files                                    import file_contents
+from osbot_utils.utils.Functions                                import python_file
+from osbot_utils.utils.Misc                                     import list_set, bytes_to_str
+from osbot_utils.utils.Zip                                      import zip_bytes__file_list
 
 from mgraph_ai_service_github_digest.service.github.GitHub__API import GitHub__API
 
@@ -15,9 +15,11 @@ class test_GitHub__API(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.github_api = GitHub__API()
-        cls.owner      = Safe_Id('owasp-sbot' )         # todo: add a class that represents the 'repo' and holds these values
-        cls.repo       = Safe_Id('OSBot-Utils')
+        cls.github_api    = GitHub__API()
+        cls.owner         = Safe_Id             ('owasp-sbot'         )         # todo: add a class that represents the 'repo' and holds these values
+        cls.repo          = Safe_Id             ('OSBot-Utils'        )
+        cls.ref           = Safe_Id             ('main'               )
+        cls.kwargs_repo   = dict(owner=cls.owner, repo=cls.repo, ref=cls.ref)
 
     def test_setUpClass(self):
         with self.github_api as _:
@@ -67,30 +69,38 @@ class test_GitHub__API(TestCase):
         with self.github_api as _:
             repo_files_contents = self.github_api.repository__contents__as_bytes(owner=self.owner, repo=self.repo)
             assert len(repo_files_contents) > 100
-            assert '.gitignore'              in repo_files_contents
-            assert 'osbot_utils/__init__.py' in repo_files_contents
+            assert Safe_Str__File__Path('.gitignore')              in repo_files_contents
+            assert Safe_Str__File__Path('osbot_utils/__init__.py') in repo_files_contents
             for file_name, file_contents in repo_files_contents.items():
                 assert (type(file_contents) is bytes)
 
     def test_repository__contents__as_strings(self):
         with self.github_api as _:
-            repo_files_contents = self.github_api.repository__contents__as_strings(owner=self.owner, repo=self.repo)
-            assert len(repo_files_contents) > 100
-            assert '.gitignore'              in repo_files_contents
-            assert 'osbot_utils/__init__.py' in repo_files_contents
+            kwargs = dict(filter_starts_with = Safe_Str__File__Path('osbot_utils/helpers'),
+                          filter_contains    = Safe_Str__File__Path('ast/'),
+                          filter_ends_with   = Safe_Str__File__Path("d.py"),
+                          **self.kwargs_repo)
+
+            repo_files_contents = self.github_api.repository__contents__as_strings(**kwargs)
+            assert len(repo_files_contents) == 8
+
+            assert Safe_Str__File__Path('osbot_utils/helpers/ast/Ast_Load.py'         ) in repo_files_contents
+            assert Safe_Str__File__Path('osbot_utils/helpers/ast/nodes/Ast_Keyword.py') in repo_files_contents
+            assert Safe_Str__File__Path('osbot_utils/helpers/ast/nodes/Ast_Yield.py'  ) in repo_files_contents
+
             for _, repo_file_contents in repo_files_contents.items():
                 assert (type(repo_file_contents) is str)
 
-            assert file_contents(python_file(Safe_Id)) == repo_files_contents.get('osbot_utils/helpers/Safe_Id.py')
+            assert file_contents(python_file(Ast_Load)) == repo_files_contents.get(Safe_Str__File__Path('osbot_utils/helpers/ast/Ast_Load.py'))
 
 
     def test_repository__files__names(self):
         with self.github_api as _:
             files_names = self.github_api.repository__files__names(owner=self.owner, repo=self.repo)
             assert len(files_names) > 700
-            assert  '.gitignore'                                     in files_names
-            assert 'osbot_utils/decorators/methods/cache_on_self.py' in files_names
-            assert 'osbot_utils/helpers/Random_Guid.py'              in files_names
+            assert Safe_Str__File__Path('.gitignore'                                     ) in files_names
+            assert Safe_Str__File__Path('osbot_utils/decorators/methods/cache_on_self.py') in files_names
+            assert Safe_Str__File__Path('osbot_utils/helpers/Random_Guid.py'             ) in files_names
 
     def test_repository__zip(self):
         with self.github_api as _:
