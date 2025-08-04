@@ -44,7 +44,7 @@ jobs:
     needs:
       - run-tests
 
-  aws_deploy_dev:
+  aws_deplo_lambda:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -60,7 +60,7 @@ jobs:
           FAST_API__AUTH__API_KEY__VALUE : ${{ secrets.FAST_API__AUTH__API_KEY__VALUE }}
           IP_DATA__API_KEY               : ${{ secrets.IP_DATA__API_KEY               }}
         with:
-          target  : TARGET_DEPLOY
+          target  : ${{ env.TARGET_DEPLOY }}
 
     needs:
       - increment-tag

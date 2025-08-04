@@ -29,12 +29,12 @@ jobs:
           FAST_API__AUTH__API_KEY__NAME  : 'api-key__in_github_test'
           FAST_API__AUTH__API_KEY__VALUE : 'this-is-the-value-of-the-api-key'
 
-  aws_deploy_lambda:
+  aws_deplo_lambda:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy Service Lambda function 
+      - name: Deploy Service Lambda function
         uses: ./.github/actions/aws__deploy__lambda
         env:
           AWS_SECRET_ACCESS_KEY          : ${{ secrets.AWS_SECRET_ACCESS_KEY          }}
@@ -45,7 +45,7 @@ jobs:
           FAST_API__AUTH__API_KEY__VALUE : ${{ secrets.FAST_API__AUTH__API_KEY__VALUE }}
           IP_DATA__API_KEY               : ${{ secrets.IP_DATA__API_KEY               }}
         with:
-          target  : TARGET_DEPLOY
+          target  : ${{ env.TARGET_DEPLOY }}
 
 #    needs:
 #      - run-tests
