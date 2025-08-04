@@ -1,15 +1,12 @@
-name: CI Pipeline - DEV
+name: CI Pipeline - Prod
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - dev
+
 
 env:
-  GIT__BRANCH      : 'dev'
-  RELEASE_TYPE     : 'minor'
+  GIT__BRANCH      : 'main'
   PACKAGE_NAME     : 'mgraph_ai_service_github_digest'
-  TARGET_DEPLOY    : 'dev'
+  TARGET_DEPLOY    : 'prod'
 
 jobs:
 
@@ -32,24 +29,12 @@ jobs:
           FAST_API__AUTH__API_KEY__NAME  : 'api-key__in_github_test'
           FAST_API__AUTH__API_KEY__VALUE : 'this-is-the-value-of-the-api-key'
 
-  increment-tag:
-    name: Increment Tag - DEV
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Increment Tag
-        uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/git__increment-tag@dev
-        with:
-          release_type: ${{ env.RELEASE_TYPE }}
-    needs:
-      - run-tests
-
-  aws_deploy_dev:
+  aws_deploy_lambda:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy Service Lambda function
+      - name: Deploy Service Lambda function 
         uses: ./.github/actions/aws__deploy__lambda
         env:
           AWS_SECRET_ACCESS_KEY          : ${{ secrets.AWS_SECRET_ACCESS_KEY          }}
@@ -62,5 +47,5 @@ jobs:
         with:
           target  : TARGET_DEPLOY
 
-    needs:
-      - increment-tag
+#    needs:
+#      - run-tests
