@@ -475,10 +475,24 @@ We welcome contributions! Please follow these steps:
 
 ## 📚 Documentation
 
-- [Full Technical Documentation](docs/index.md)
-- [API Reference](docs/api/)
-- [Architecture Guide](docs/architecture/)
-- [Type Safety Patterns](docs/type_safe/)
+### Core Documentation
+- [Technical Overview](docs/index.md) - Complete system documentation
+- [Type Safety Patterns](docs/type_safe/mgraph-service-type-safety-patterns.md) - Type safety architecture and patterns
+
+### Component Documentation
+- **Infrastructure**
+  - [Lambda Handler](docs/code/mgraph_ai_service_github_digest/fast_api/lambda_handler.py.md) - AWS Lambda integration
+  - [Deploy Service](docs/code/mgraph_ai_service_github_digest/utils/deploy/Deploy__Service--tech_debrief.md) - Deployment orchestration
+
+- **Services**
+  - [GitHub API Service](docs/code/mgraph_ai_service_github_digest/service/github/GitHub__API.py.md) - GitHub API integration
+  - [GitHub Digest Service](docs/code/mgraph_ai_service_github_digest/service/github/GitHub__Digest.py.md) - Content aggregation
+
+- **Routes**
+  - [GitHub API Routes](docs/code/mgraph_ai_service_github_digest/fast_api/routes/Routes__GitHub.py.md) - RESTful endpoints
+
+- **Security**
+  - [IP Address Validation](docs/code/mgraph_ai_service_github_digest/utils/for_osbot_utils/Safe_Str__IP_Address.py.md) - Safe IP handling
 
 ## 🔗 Related Projects
 
@@ -499,7 +513,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## 📞 Support
 
-- 📧 Email: dinis.cruz@owasp.org
 - 🐛 Issues: [GitHub Issues](https://github.com/the-cyber-boardroom/MGraph-AI__Service__GitHub__Digest/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/the-cyber-boardroom/MGraph-AI__Service__GitHub__Digest/discussions)
 
