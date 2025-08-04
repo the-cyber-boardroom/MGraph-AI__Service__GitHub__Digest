@@ -6,6 +6,8 @@ from osbot_utils.type_safe.Type_Safe                                import Type_
 from osbot_utils.type_safe.decorators.type_safe                     import type_safe
 from osbot_utils.utils.Zip import zip_bytes__file_list, zip_bytes__files
 
+from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter import \
+    Schema__GitHub__Repo__Filter
 from mgraph_ai_service_github_digest.service.shared.Http__Requests  import Http__Requests
 
 SERVER__API_GITHUB_COM = "https://api.github.com"
@@ -64,18 +66,12 @@ class GitHub__API(Type_Safe):
         return fixed_repo_files_contents
 
     @type_safe
-    def repository__contents__as_strings(self, owner             : Safe_Id                               ,
-                                               repo              : Safe_Id                               ,
-                                               ref               : Safe_Id              = Safe_Id("main"),
-                                               filter_starts_with: Safe_Str__File__Path = None           ,
-                                               filter_contains   : Safe_Str__File__Path = None           ,
-                                               filter_ends_with  : Safe_Str__File__Path = None
-                                          ) -> Dict:
-        repo_files_contents = self.repository__contents__as_bytes(owner=owner, repo=repo, ref=ref)
+    def repository__contents__as_strings(self, repo_filter: Schema__GitHub__Repo__Filter) -> Dict:
+        repo_files_contents = self.repository__contents__as_bytes(owner=repo_filter.owner, repo=repo_filter.repo, ref=repo_filter.ref)
         contents_as_strings = {}
         for file_path, file_contents in repo_files_contents.items():
             try:
-                if self.path_matches_filter(path=file_path, filter_starts_with=filter_starts_with, filter_contains=filter_contains, filter_ends_with=filter_ends_with):
+                if self.path_matches_filter(path=file_path, repo_filter=repo_filter):
                     contents_as_strings[file_path] = file_contents.decode()                                                 # convert the file contents into a string
             except UnicodeDecodeError:
                 pass                                                                                                    # todo: review if this is the best way to handle this situation, since the point of the method is to return strings
@@ -83,14 +79,12 @@ class GitHub__API(Type_Safe):
         return contents_as_strings
 
 
-    def path_matches_filter(self, path              : Safe_Str__File__Path = None,
-                                  filter_starts_with: Safe_Str__File__Path = None,
-                                  filter_contains   : Safe_Str__File__Path = None,
-                                  filter_ends_with  : Safe_Str__File__Path = None
+    def path_matches_filter(self, path       : Safe_Str__File__Path         ,
+                                  repo_filter: Schema__GitHub__Repo__Filter
                              ) -> bool:
-        if filter_starts_with and not path.startswith(filter_starts_with):  return False
-        if filter_ends_with   and not path.endswith  (filter_ends_with  ):  return False
-        if filter_contains    and     filter_contains not in path        :  return False
+        if repo_filter.filter_starts_with and not path.startswith(repo_filter.filter_starts_with):  return False
+        if repo_filter.filter_ends_with   and not path.endswith  (repo_filter.filter_ends_with  ):  return False
+        if repo_filter.filter_contains    and     repo_filter.filter_contains not in path        :  return False
 
         return True                                                                 # else we also have a match
 

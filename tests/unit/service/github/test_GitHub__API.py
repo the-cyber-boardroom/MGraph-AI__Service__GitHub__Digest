@@ -8,6 +8,8 @@ from osbot_utils.utils.Misc                                     import list_set,
 from osbot_utils.utils.Zip                                      import zip_bytes__file_list
 
 from mgraph_ai_service_github_digest.service.github.GitHub__API import GitHub__API
+from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter import \
+    Schema__GitHub__Repo__Filter
 
 
 # todo: we need to add support for caching the requests (at least per hour) so that we don't hit GitHub request limitations
@@ -76,12 +78,15 @@ class test_GitHub__API(TestCase):
 
     def test_repository__contents__as_strings(self):
         with self.github_api as _:
-            kwargs = dict(filter_starts_with = Safe_Str__File__Path('osbot_utils/helpers'),
-                          filter_contains    = Safe_Str__File__Path('ast/'),
-                          filter_ends_with   = Safe_Str__File__Path("d.py"),
-                          **self.kwargs_repo)
 
-            repo_files_contents = self.github_api.repository__contents__as_strings(**kwargs)
+            repo_filter = Schema__GitHub__Repo__Filter(owner              = self.owner                                 ,
+                                                       repo               = self.repo                                  ,
+                                                       ref                = self.ref                                   ,
+                                                       filter_starts_with = Safe_Str__File__Path('osbot_utils/helpers'),
+                                                       filter_contains    = Safe_Str__File__Path('ast/'               ),
+                                                       filter_ends_with   = Safe_Str__File__Path("d.py"               ))
+
+            repo_files_contents = self.github_api.repository__contents__as_strings(repo_filter=repo_filter)
             assert len(repo_files_contents) == 8
 
             assert Safe_Str__File__Path('osbot_utils/helpers/ast/Ast_Load.py'         ) in repo_files_contents

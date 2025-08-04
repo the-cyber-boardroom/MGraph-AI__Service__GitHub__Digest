@@ -3,6 +3,8 @@ from osbot_utils.helpers.Safe_Id                                import Safe_Id
 from osbot_utils.helpers.safe_str.Safe_Str__File__Path import Safe_Str__File__Path
 
 from mgraph_ai_service_github_digest.service.github.GitHub__API import GitHub__API
+from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter import \
+    Schema__GitHub__Repo__Filter
 
 TAG__GITHUB_API            = 'github-api'
 ROUTES_PATHS__GIT_HUB__API = [f'/{TAG__GITHUB_API}/apis-available'         ,
@@ -14,9 +16,12 @@ ROUTES_PATHS__GIT_HUB__API = [f'/{TAG__GITHUB_API}/apis-available'         ,
                               f'/{TAG__GITHUB_API}/repository-text-files'  ,
                               ]
 
-GIT_HUB__API__DEFAULT__OWNER = 'owasp-sbot'
-GIT_HUB__API__DEFAULT__REPO  = 'OSBot-Utils'
-GIT_HUB__API__DEFAULT__REF   = 'main'
+GIT_HUB__API__DEFAULT__OWNER              = 'owasp-sbot'
+GIT_HUB__API__DEFAULT__REPO               = 'OSBot-Utils'
+GIT_HUB__API__DEFAULT__REF                = 'main'
+GIT_HUB__API__DEFAULT__FILTER_STARTS_WITH = 'osbot_utils'
+GIT_HUB__API__DEFAULT__FILTER_CONTAINS    = ''
+GIT_HUB__API__DEFAULT__FILTER_ENDS_WITH   = '.py'
 
 class Routes__GitHub__API(Fast_API_Routes):
     tag        : str         = TAG__GITHUB_API
@@ -50,13 +55,13 @@ class Routes__GitHub__API(Fast_API_Routes):
                                     filter_contains    : str = ''                          ,
                                     filter_ends_with   : str = ''
                                ) -> dict:
-        kwargs = dict(owner              = Safe_Id(owner                          ),
-                      repo               = Safe_Id(repo                           ),
-                      ref                = Safe_Id(ref                            ),
-                      filter_starts_with = Safe_Str__File__Path(filter_starts_with),
-                      filter_contains    = Safe_Str__File__Path(filter_contains   ),
-                      filter_ends_with   = Safe_Str__File__Path(filter_ends_with  ))
-        return self.github_api.repository__contents__as_strings(**kwargs)
+        repo_filter = Schema__GitHub__Repo__Filter(owner              = owner               ,
+                                                   repo               = repo                ,
+                                                   ref                = ref                 ,
+                                                   filter_starts_with = filter_starts_with  ,
+                                                   filter_contains    = filter_contains     ,
+                                                   filter_ends_with   = filter_ends_with    )
+        return self.github_api.repository__contents__as_strings(repo_filter=repo_filter)
 
     def repository_files_names(self, owner: str = GIT_HUB__API__DEFAULT__OWNER,
                                      repo : str = GIT_HUB__API__DEFAULT__REPO
