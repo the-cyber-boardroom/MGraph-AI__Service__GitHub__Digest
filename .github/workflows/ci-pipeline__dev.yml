@@ -44,7 +44,7 @@ jobs:
     needs:
       - run-tests
 
-  aws_deploy_dev:
+  aws_deplo_lambda:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
