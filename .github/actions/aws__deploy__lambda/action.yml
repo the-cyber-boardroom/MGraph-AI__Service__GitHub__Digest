@@ -1,7 +1,7 @@
 name: "aws__deploy__lambda"
 description: "aws__deploy__lambda"
 inputs:
-  environment:
+  target:
     target: "Target deployment (dev, qa or main)"
     required: true
 
