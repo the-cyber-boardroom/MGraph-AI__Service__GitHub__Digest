@@ -2,11 +2,11 @@ from typing                                                                     
 from osbot_utils.helpers.safe_str.Safe_Str__File__Path                                   import Safe_Str__File__Path
 from osbot_utils.type_safe.Type_Safe                                                     import Type_Safe
 from osbot_utils.type_safe.decorators.type_safe                                          import type_safe
-from osbot_utils.utils.Http import url_join_safe
+from osbot_utils.utils.Http                                                              import url_join_safe
 from osbot_utils.utils.Zip                                                               import zip_bytes__file_list, zip_bytes__files
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo         import Schema__GitHub__Repo
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter import Schema__GitHub__Repo__Filter
-from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Ref import Schema__GitHub__Repo__Ref
+from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Ref    import Schema__GitHub__Repo__Ref
 from mgraph_ai_service_github_digest.service.shared.Http__Requests                       import Http__Requests
 
 SERVER__API_GITHUB_COM = "https://api.github.com"
