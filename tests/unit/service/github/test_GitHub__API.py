@@ -122,4 +122,8 @@ class test_GitHub__API(TestCase):
         kwargs_repo = dict(owner=owner, repo=repo, ref=ref)
 
         with GitHub__API() as _:
-            assert _.repository(owner=owner, repo=repo) == {}
+            result = _.repository(owner=owner, repo=repo)
+            # below is a different bug, which is caused by the use of Safe_Id
+            assert  result.get('content') == {  'documentation_url': 'https://docs.github.com/rest/repos/repos#get-a-repository',
+                                                'message': 'Not Found',
+                                                'status': '404'}
