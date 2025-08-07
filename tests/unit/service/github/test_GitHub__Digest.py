@@ -20,5 +20,6 @@ class test_GitHub__Digest(TestCase):
     def test_repo_files__in_markdown(self):
         with self.github_digest as _:
             result = _.repo_files__in_markdown(repo_filter=self.repo_filter)
-            print()
-            print(result)
+            assert "### osbot_utils/helpers/Guid.py" in result
+            # # print()
+            # print(result)

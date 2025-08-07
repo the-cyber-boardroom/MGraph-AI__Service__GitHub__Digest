@@ -114,3 +114,12 @@ class test_GitHub__API(TestCase):
             assert type(content) is bytes
             zip_files = zip_bytes__file_list(content)
             assert len(zip_files) > 900
+
+    def test__bug__dict_error_in_dinis_cruz_docs_site(self):
+        owner       = Safe_Id('DinisCruz')
+        repo        = Safe_Id('docs.diniscruz.ai')
+        ref         = Safe_Id('dev')
+        kwargs_repo = dict(owner=owner, repo=repo, ref=ref)
+
+        with GitHub__API() as _:
+            assert _.repository(owner=owner, repo=repo) == {}

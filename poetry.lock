@@ -14,14 +14,14 @@ files = [
 
 [[package]]
 name = "anyio"
-version = "4.9.0"
-description = "High level compatibility layer for multiple asynchronous event loop implementations"
+version = "4.10.0"
+description = "High-level concurrency and networking framework on top of asyncio or Trio"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "anyio-4.9.0-py3-none-any.whl", hash = "sha256:9f76d541cad6e36af7beb62e978876f3b41e3e04f2c1fbf0884604c0a9c4d93c"},
-    {file = "anyio-4.9.0.tar.gz", hash = "sha256:673c0c244e15788651a4ff38710fea9675823028a6f08a5eda409e0c9840a028"},
+    {file = "anyio-4.10.0-py3-none-any.whl", hash = "sha256:60e474ac86736bbfd6f210f7a61218939c318f43f9972497381f1c5e930ed3d1"},
+    {file = "anyio-4.10.0.tar.gz", hash = "sha256:3f3fae35c96039744587aa5b8371e7e8e603c0702999535961dd336026973ba6"},
 ]
 
 [package.dependencies]
@@ -30,24 +30,22 @@ sniffio = ">=1.1"
 typing_extensions = {version = ">=4.5", markers = "python_version < \"3.13\""}
 
 [package.extras]
-doc = ["Sphinx (>=8.2,<9.0)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx_rtd_theme"]
-test = ["anyio[trio]", "blockbuster (>=1.5.23)", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypothesis (>=4.0)", "psutil (>=5.9)", "pytest (>=7.0)", "trustme", "truststore (>=0.9.1)", "uvloop (>=0.21)"]
 trio = ["trio (>=0.26.1)"]
 
 [[package]]
 name = "boto3"
-version = "1.40.0"
+version = "1.40.4"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "boto3-1.40.0-py3-none-any.whl", hash = "sha256:959443055d2af676c336cc6033b3f870a8a924384b70d0b2905081d649378179"},
-    {file = "boto3-1.40.0.tar.gz", hash = "sha256:fc1b3ca3baf3d8820c6faddf47cbba8ad3cd16f8e8d7e2f76d304bf995932eb7"},
+    {file = "boto3-1.40.4-py3-none-any.whl", hash = "sha256:95cdc86454e9ff43e0693c5d807a54ce6813b6711d3543a0052ead5216b93367"},
+    {file = "boto3-1.40.4.tar.gz", hash = "sha256:6eceffe4ae67c2cb077574289c0efe3ba60e8446646893a974fc3c2fa1130e7c"},
 ]
 
 [package.dependencies]
-botocore = ">=1.40.0,<1.41.0"
+botocore = ">=1.40.4,<1.41.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.13.0,<0.14.0"
 
@@ -56,14 +54,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.40.0"
+version = "1.40.4"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "botocore-1.40.0-py3-none-any.whl", hash = "sha256:2063e6d035a6a382b2ae37e40f5144044e55d4e091910d0c9f1be3121ad3e4e6"},
-    {file = "botocore-1.40.0.tar.gz", hash = "sha256:850242560dc8e74d542045a81eb6cc15f1b730b4ba55ba5b30e6d686548dfcaf"},
+    {file = "botocore-1.40.4-py3-none-any.whl", hash = "sha256:4e131c52731e10a6af998c2ac3bfbda12e6ecef0e3633268c7752d0502c74197"},
+    {file = "botocore-1.40.4.tar.gz", hash = "sha256:f1dacde69ec8b08f39bcdb62247bab4554938b5d7f8805ade78447da55c9df36"},
 ]
 
 [package.dependencies]
@@ -76,14 +74,14 @@ crt = ["awscrt (==0.23.8)"]
 
 [[package]]
 name = "certifi"
-version = "2025.7.14"
+version = "2025.8.3"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "certifi-2025.7.14-py3-none-any.whl", hash = "sha256:6b31f564a415d79ee77df69d757bb49a5bb53bd9f756cbbe24394ffd6fc1f4b2"},
-    {file = "certifi-2025.7.14.tar.gz", hash = "sha256:8ea99dbdfaaf2ba2f9bac77b9249ef62ec5218e7c2b2e903378ed5fccf765995"},
+    {file = "certifi-2025.8.3-py3-none-any.whl", hash = "sha256:f6c12493cfb1b06ba2ff328595af9350c65d6644968e5d3a2ffd78699af217a5"},
+    {file = "certifi-2025.8.3.tar.gz", hash = "sha256:e564105f78ded564e3ae7c923924435e1daa7463faeab5bb932bc53ffae63407"},
 ]
 
 [[package]]
@@ -396,14 +394,14 @@ uvicorn = "*"
 
 [[package]]
 name = "osbot-fast-api-serverless"
-version = "1.1.0"
+version = "1.2.0"
 description = "OSBot-Fast-API-Serverless"
 optional = false
 python-versions = "<4.0,>=3.12"
 groups = ["main"]
 files = [
-    {file = "osbot_fast_api_serverless-1.1.0-py3-none-any.whl", hash = "sha256:21689104b9e08d66266e916575a95064604acef3394925fda8e1e5aa3beddb6f"},
-    {file = "osbot_fast_api_serverless-1.1.0.tar.gz", hash = "sha256:eb6e0e61bf69834cb9066bb88a1c0f0d26d3cae58f2098d7dcd4418ce624dc8f"},
+    {file = "osbot_fast_api_serverless-1.2.0-py3-none-any.whl", hash = "sha256:b7c06ad825a42e41906309eacafa7229a91eb8a6dec8577b6c0472e8ee4bf890"},
+    {file = "osbot_fast_api_serverless-1.2.0.tar.gz", hash = "sha256:b6f85a123a30d0d38ec5013bd214034ca04d7e8e2e19c1e14541eb81484c9124"},
 ]
 
 [package.dependencies]
@@ -413,14 +411,14 @@ osbot-fast-api = "*"
 
 [[package]]
 name = "osbot-utils"
-version = "2.71.0"
+version = "2.72.0"
 description = "OWASP Security Bot - Utils"
 optional = false
 python-versions = "<4.0,>=3.7"
 groups = ["main"]
 files = [
-    {file = "osbot_utils-2.71.0-py3-none-any.whl", hash = "sha256:d027e8a2486ebf38e944d7d3742a2228db4e20d6616cedb99fbc9f10c4b15c6e"},
-    {file = "osbot_utils-2.71.0.tar.gz", hash = "sha256:3b1555159719dc94b764d1760b3b4510f1fb562a917040d5fe2a1d598f73b0b3"},
+    {file = "osbot_utils-2.72.0-py3-none-any.whl", hash = "sha256:a846fd1fe0c34e0c9137e5fd5aad77d6000ad0ba8de5b9537fbd7bb51756a619"},
+    {file = "osbot_utils-2.72.0.tar.gz", hash = "sha256:8df0886de2b58f83d0f5837f8305ffc4d685b4f7cf6fcd174bad5652705971e6"},
 ]
 
 [[package]]
