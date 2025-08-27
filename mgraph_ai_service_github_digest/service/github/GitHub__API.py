@@ -1,7 +1,7 @@
 from typing                                                                              import Dict
-from osbot_utils.helpers.safe_str.Safe_Str__File__Path                                   import Safe_Str__File__Path
 from osbot_utils.type_safe.Type_Safe                                                     import Type_Safe
-from osbot_utils.type_safe.decorators.type_safe                                          import type_safe
+from osbot_utils.type_safe.primitives.safe_str.filesystem.Safe_Str__File__Path           import Safe_Str__File__Path
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe                           import type_safe
 from osbot_utils.utils.Http                                                              import url_join_safe
 from osbot_utils.utils.Zip                                                               import zip_bytes__file_list, zip_bytes__files
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo         import Schema__GitHub__Repo

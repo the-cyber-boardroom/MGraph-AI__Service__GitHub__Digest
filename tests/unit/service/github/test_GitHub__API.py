@@ -1,7 +1,10 @@
 from unittest                                                                                           import TestCase
-from osbot_utils.helpers.Safe_Id                                                                        import Safe_Id
 from osbot_utils.helpers.ast.Ast_Load                                                                   import Ast_Load
-from osbot_utils.helpers.safe_str.Safe_Str__File__Path                                                  import Safe_Str__File__Path
+from osbot_utils.type_safe.primitives.safe_str.filesystem.Safe_Str__File__Path                          import Safe_Str__File__Path
+from osbot_utils.type_safe.primitives.safe_str.git.Safe_Str__Git__Ref                                   import Safe_Str__Git__Ref
+from osbot_utils.type_safe.primitives.safe_str.github.Safe_Str__GitHub__Repo_Name                       import Safe_Str__GitHub__Repo_Name
+from osbot_utils.type_safe.primitives.safe_str.github.Safe_Str__GitHub__Repo_Owner                      import Safe_Str__GitHub__Repo_Owner
+from osbot_utils.type_safe.primitives.safe_str.identifiers.Safe_Id                                      import Safe_Id
 from osbot_utils.utils.Files                                                                            import file_contents
 from osbot_utils.utils.Functions                                                                        import python_file
 from osbot_utils.utils.Misc                                                                             import list_set
@@ -10,9 +13,6 @@ from mgraph_ai_service_github_digest.service.github.GitHub__API                 
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo                        import Schema__GitHub__Repo
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter                import Schema__GitHub__Repo__Filter
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Ref                   import Schema__GitHub__Repo__Ref
-from mgraph_ai_service_github_digest.utils.for_osbot_utils.safe_str.git.Safe_Str__Git__Ref              import Safe_Str__Git__Ref
-from mgraph_ai_service_github_digest.utils.for_osbot_utils.safe_str.github.Safe_Str__GitHub__Repo_Name  import Safe_Str__GitHub__Repo_Name
-from mgraph_ai_service_github_digest.utils.for_osbot_utils.safe_str.github.Safe_Str__GitHub__Repo_Owner import Safe_Str__GitHub__Repo_Owner
 
 from osbot_utils.utils.Dev  import pprint
 
@@ -68,12 +68,13 @@ class test_GitHub__API(TestCase):
             issues = self.github_api.issues(github_repo=self.github_repo).get('content')
             assert type(issues) is list                                                    # todo: this should be a strongly typed class
             for issue in issues:
-                assert list_set(issue) == ['active_lock_reason', 'assignee', 'assignees', 'author_association',
+                assert list_set(issue) == sorted(['active_lock_reason', 'assignee', 'assignees', 'author_association',
                                            'body', 'closed_at', 'closed_by', 'comments', 'comments_url', 'created_at',
                                            'events_url', 'html_url', 'id', 'labels', 'labels_url', 'locked', 'milestone',
                                            'node_id', 'number', 'performed_via_github_app', 'reactions', 'repository_url',
                                            'state', 'state_reason', 'sub_issues_summary', 'timeline_url', 'title', 'type',
-                                           'updated_at', 'url', 'user']
+                                           'updated_at', 'url', 'user'] +
+                                            ['issue_dependencies_summary'])
 
     def test_rate_limit(self):
         with self.github_api as _:

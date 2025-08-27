@@ -1,5 +1,5 @@
 from unittest                                                               import TestCase
-from osbot_fast_api.api.Fast_API_Routes                                     import Fast_API_Routes
+from osbot_fast_api.api.routes.Fast_API__Routes                             import Fast_API__Routes
 from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
 from osbot_utils.utils.Objects                                              import base_classes
 from starlette.responses                                                    import PlainTextResponse
@@ -14,7 +14,7 @@ class test_Routes__GitHub__Digest(TestCase):
     def test_setUpClass(self):
         with self.routes_github__digest as _:
             assert type(_)         == Routes__GitHub__Digest
-            assert base_classes(_) == [Fast_API_Routes, Type_Safe, object]
+            assert base_classes(_) == [Fast_API__Routes, Type_Safe, object]
 
     def test_repo_files_in_markdown(self):
         with self.routes_github__digest as _:

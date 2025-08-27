@@ -1,12 +1,12 @@
-from osbot_fast_api.api.Fast_API_Routes                                                                 import Fast_API_Routes
+from osbot_fast_api.api.routes.Fast_API__Routes                                                         import Fast_API__Routes
+from osbot_utils.type_safe.primitives.safe_str.filesystem.Safe_Str__File__Path                          import Safe_Str__File__Path
+from osbot_utils.type_safe.primitives.safe_str.git.Safe_Str__Git__Ref                                   import Safe_Str__Git__Ref
+from osbot_utils.type_safe.primitives.safe_str.github.Safe_Str__GitHub__Repo_Name                       import Safe_Str__GitHub__Repo_Name
+from osbot_utils.type_safe.primitives.safe_str.github.Safe_Str__GitHub__Repo_Owner                      import Safe_Str__GitHub__Repo_Owner
 from mgraph_ai_service_github_digest.service.github.GitHub__API                                         import GitHub__API
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo                        import Schema__GitHub__Repo
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter                import Schema__GitHub__Repo__Filter
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Ref                   import Schema__GitHub__Repo__Ref
-from mgraph_ai_service_github_digest.utils.for_osbot_utils.safe_str.git.Safe_Str__Git__Ref              import Safe_Str__Git__Ref
-from mgraph_ai_service_github_digest.utils.for_osbot_utils.safe_str.github.Safe_Str__GitHub__Repo_Name  import Safe_Str__GitHub__Repo_Name
-from mgraph_ai_service_github_digest.utils.for_osbot_utils.safe_str.github.Safe_Str__GitHub__Repo_Owner import Safe_Str__GitHub__Repo_Owner
-from osbot_utils.helpers.safe_str.Safe_Str__File__Path                                                  import Safe_Str__File__Path
 
 TAG__GITHUB_API            = 'github-api'
 ROUTES_PATHS__GIT_HUB__API = [f'/{TAG__GITHUB_API}/apis-available'         ,
@@ -25,7 +25,7 @@ GIT_HUB__API__DEFAULT__FILTER_STARTS_WITH = 'osbot_utils'
 GIT_HUB__API__DEFAULT__FILTER_CONTAINS    = ''
 GIT_HUB__API__DEFAULT__FILTER_ENDS_WITH   = '.py'
 
-class Routes__GitHub__API(Fast_API_Routes):
+class Routes__GitHub__API(Fast_API__Routes):
     tag        : str         = TAG__GITHUB_API
     github_api : GitHub__API
 
@@ -66,8 +66,8 @@ class Routes__GitHub__API(Fast_API_Routes):
 
 
         repo_filter = Schema__GitHub__Repo__Filter(owner = Safe_Str__GitHub__Repo_Owner(owner),
-                                                   name  = Safe_Str__GitHub__Repo_Name(name),
-                                                   ref   = Safe_Str__Git__Ref(ref))
+                                                   name  = Safe_Str__GitHub__Repo_Name (name ),
+                                                   ref   = Safe_Str__Git__Ref          (ref  ))
 
         # Only set filter fields if they have values (not empty strings)
         if filter_starts_with:

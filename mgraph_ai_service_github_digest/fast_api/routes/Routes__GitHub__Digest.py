@@ -1,4 +1,4 @@
-from osbot_fast_api.api.Fast_API_Routes                                                     import Fast_API_Routes
+from osbot_fast_api.api.routes.Fast_API__Routes                                             import Fast_API__Routes
 from starlette.responses                                                                    import PlainTextResponse
 from mgraph_ai_service_github_digest.fast_api.routes.Routes__GitHub__API                    import GIT_HUB__API__DEFAULT__REPO_OWNER, GIT_HUB__API__DEFAULT__REPO_NAME, GIT_HUB__API__DEFAULT__REF, GIT_HUB__API__DEFAULT__FILTER_STARTS_WITH, GIT_HUB__API__DEFAULT__FILTER_CONTAINS, GIT_HUB__API__DEFAULT__FILTER_ENDS_WITH
 from mgraph_ai_service_github_digest.service.github.GitHub__Digest                          import GitHub__Digest
@@ -6,7 +6,7 @@ from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo
 
 ROUTES_PATHS__GIT_HUB__DIGEST = ['/github-digest/repo-files-in-markdown']
 
-class Routes__GitHub__Digest(Fast_API_Routes):
+class Routes__GitHub__Digest(Fast_API__Routes):
     tag          : str            = 'github-digest'
     github_digest: GitHub__Digest
 
