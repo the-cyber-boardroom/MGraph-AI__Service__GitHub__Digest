@@ -13,7 +13,7 @@ class GitHub__Digest(Type_Safe):
 # Files from Repo
  
  - owner: {_.owner}
- - repo: {_.repo} 
+ - name: {_.name} 
  - ref: {_.ref}"
 
 created at: { date_time_now()}

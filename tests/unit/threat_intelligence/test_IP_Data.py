@@ -1,10 +1,9 @@
 import pytest
-from unittest                                                                   import TestCase
-from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Env                                                      import load_dotenv
-from osbot_utils.utils.Objects                                                  import obj
-from mgraph_ai_service_github_digest.service.threat_intelligence.IP_Data        import IP_Data, ENV_VAR__IP_DATA__API_KEY
-from mgraph_ai_service_github_digest.utils.for_osbot_utils.Safe_Str__IP_Address import Safe_Str__IP_Address
+from unittest                                                            import TestCase
+from osbot_utils.type_safe.primitives.safe_str.web.Safe_Str__IP_Address  import Safe_Str__IP_Address
+from osbot_utils.utils.Env                                               import load_dotenv
+from osbot_utils.utils.Objects                                           import obj
+from mgraph_ai_service_github_digest.service.threat_intelligence.IP_Data import IP_Data, ENV_VAR__IP_DATA__API_KEY
 
 
 class test_IP_Data(TestCase):

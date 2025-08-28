@@ -143,12 +143,7 @@ graph LR
 ```python
 def upload_lambda_dependencies_to_s3(self):
     """Upload packaged dependencies to S3"""
-    dependencies = [
-        'osbot-fast-api-serverless',
-        'mangum',
-        'fastapi',
-        'osbot-utils'
-    ]
+    dependencies = ['osbot-fast-api-serverless==v1.2.0']
     
     results = {}
     for dep in dependencies:
