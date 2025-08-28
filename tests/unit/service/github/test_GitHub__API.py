@@ -136,9 +136,9 @@ class test_GitHub__API(TestCase):
         with self.github_api as _:
             files_names = self.github_api.repository__files__names(self.github_repo_ref)
             assert len(files_names) > 700
-            assert Safe_Str__File__Path('.gitignore'                                     ) in files_names
-            assert Safe_Str__File__Path('osbot_utils/decorators/methods/cache_on_self.py') in files_names
-            assert Safe_Str__File__Path('osbot_utils/helpers/Random_Guid.py'             ) in files_names
+            assert Safe_Str__File__Path('.gitignore'                                                          ) in files_names
+            assert Safe_Str__File__Path('osbot_utils/decorators/methods/cache_on_self.py'                     ) in files_names
+            assert Safe_Str__File__Path('osbot_utils/type_safe/primitives/safe_str/identifiers/Random_Guid.py') in files_names
 
     def test_repository__zip(self):
         with self.github_api as _:

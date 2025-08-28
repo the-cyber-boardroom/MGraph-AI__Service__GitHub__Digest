@@ -1,6 +1,7 @@
 from unittest                                                                    import TestCase
 from fastapi                                                                     import FastAPI
 from osbot_fast_api.api.Fast_API                                                 import ENV_VAR__FAST_API__AUTH__API_KEY__NAME, ENV_VAR__FAST_API__AUTH__API_KEY__VALUE
+from osbot_fast_api.schemas.consts__Fast_API                                     import EXPECTED_ROUTES__SET_COOKIE
 from osbot_local_stack.local_stack.Local_Stack                                   import Local_Stack
 from osbot_utils.utils.Env                                                       import get_env
 from starlette.testclient                                                        import TestClient
@@ -61,8 +62,9 @@ class test_Service__Fast_API__client(TestCase):
 
 
     def test__config_fast_api_routes(self):
-        assert self.fast_api.routes_paths() == sorted(ROUTES_PATHS__INFO               +
-                                                      ROUTES_PATHS__GIT_HUB__DIGEST    +
-                                                      ROUTES_PATHS__GIT_HUB__API       +
-                                                      ROUTES_PATHS__THREAT_INTELLIGENCE)
+        assert self.fast_api.routes_paths() == sorted(ROUTES_PATHS__INFO                +
+                                                      ROUTES_PATHS__GIT_HUB__DIGEST     +
+                                                      ROUTES_PATHS__GIT_HUB__API        +
+                                                      ROUTES_PATHS__THREAT_INTELLIGENCE +
+                                                      EXPECTED_ROUTES__SET_COOKIE       )
 
