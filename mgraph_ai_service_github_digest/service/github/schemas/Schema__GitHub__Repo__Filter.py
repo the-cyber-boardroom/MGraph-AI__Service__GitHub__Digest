@@ -1,4 +1,4 @@
-from osbot_utils.type_safe.primitives.safe_str.filesystem.Safe_Str__File__Path        import Safe_Str__File__Path
+from osbot_utils.type_safe.primitives.domains.files.safe_str.Safe_Str__File__Path     import Safe_Str__File__Path
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Ref import Schema__GitHub__Repo__Ref
 
 

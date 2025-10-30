@@ -1,9 +1,9 @@
-from osbot_utils.decorators.methods.cache_on_self                               import cache_on_self
-from osbot_utils.type_safe.Type_Safe                                            import Type_Safe
-from osbot_utils.type_safe.primitives.safe_str.web.Safe_Str__IP_Address         import Safe_Str__IP_Address
-from osbot_utils.type_safe.type_safe_core.decorators.type_safe                  import type_safe
-from osbot_utils.utils.Env                                                      import get_env
-from mgraph_ai_service_github_digest.service.shared.Http__Requests              import Http__Requests
+from osbot_utils.decorators.methods.cache_on_self                                   import cache_on_self
+from osbot_utils.type_safe.Type_Safe                                                import Type_Safe
+from osbot_utils.type_safe.primitives.domains.network.safe_str.Safe_Str__IP_Address import Safe_Str__IP_Address
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe                      import type_safe
+from osbot_utils.utils.Env                                                          import get_env
+from mgraph_ai_service_github_digest.service.shared.Http__Requests                  import Http__Requests
 
 
 IP_DATA__API_NAME          = 'api-key'

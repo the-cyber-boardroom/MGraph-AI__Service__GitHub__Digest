@@ -1,6 +1,14 @@
 from mgraph_ai_service_github_digest import package_name
+import os
 
 SERVICE_NAME                             = package_name
 FAST_API__TITLE                          = "Github Digest - Service"
 LAMBDA_NAME__SERVICE__GITHUB_DIGEST      = f'service__{SERVICE_NAME}'
 LAMBDA_DEPENDENCIES__FAST_API_SERVERLESS = ['osbot-fast-api-serverless==v1.15.0']
+
+# Cache Service Configuration
+CACHE_SERVICE_URL         = os.getenv('CACHE_SERVICE_URL'  , 'https://cache.dev.mgraph.ai')    # Cache service endpoint
+CACHE_NAMESPACE           = os.getenv('CACHE_NAMESPACE'    , 'github-digest'             )    # Cache namespace
+CACHE_STRATEGY            = os.getenv('CACHE_STRATEGY'     , 'temporal_latest'           )    # Storage strategy
+CACHE_ENABLED             = os.getenv('CACHE_ENABLED'      , 'true').lower() == 'true'        # Enable/disable caching
+CACHE_TTL_HOURS           = int(os.getenv('CACHE_TTL_HOURS', '24'))                         # Cache TTL in hours

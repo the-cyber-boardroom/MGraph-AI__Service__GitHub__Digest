@@ -1,10 +1,10 @@
-from unittest                                                                             import TestCase
-from osbot_utils.type_safe.primitives.safe_str.filesystem.Safe_Str__File__Path            import Safe_Str__File__Path
-from osbot_utils.type_safe.primitives.safe_str.git.Safe_Str__Git__Ref                     import Safe_Str__Git__Ref
-from osbot_utils.type_safe.primitives.safe_str.github.Safe_Str__GitHub__Repo_Name         import Safe_Str__GitHub__Repo_Name
-from osbot_utils.type_safe.primitives.safe_str.github.Safe_Str__GitHub__Repo_Owner        import Safe_Str__GitHub__Repo_Owner
-from mgraph_ai_service_github_digest.service.github.GitHub__Digest                        import GitHub__Digest
-from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter  import Schema__GitHub__Repo__Filter
+from unittest                                                                                   import TestCase
+from osbot_utils.type_safe.primitives.domains.files.safe_str.Safe_Str__File__Path               import Safe_Str__File__Path
+from osbot_utils.type_safe.primitives.domains.git.github.safe_str.Safe_Str__GitHub__Repo_Name   import Safe_Str__GitHub__Repo_Name
+from osbot_utils.type_safe.primitives.domains.git.github.safe_str.Safe_Str__GitHub__Repo_Owner  import Safe_Str__GitHub__Repo_Owner
+from osbot_utils.type_safe.primitives.domains.git.safe_str.Safe_Str__Git__Ref                   import Safe_Str__Git__Ref
+from mgraph_ai_service_github_digest.service.github.GitHub__Digest                              import GitHub__Digest
+from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter        import Schema__GitHub__Repo__Filter
 
 
 class test_GitHub__Digest(TestCase):
@@ -22,6 +22,6 @@ class test_GitHub__Digest(TestCase):
     def test_repo_files__in_markdown(self):
         with self.github_digest as _:
             result = _.repo_files__in_markdown(repo_filter=self.repo_filter)
-            assert "### osbot_utils/helpers/Obj_Id.py" in result
+            assert "### osbot_utils/helpers/Random_Seed.py" in result
             # # print()
             # print(result)
