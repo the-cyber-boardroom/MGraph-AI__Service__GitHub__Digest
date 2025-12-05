@@ -58,7 +58,11 @@ class GitHub__Digest(Type_Safe):
     """
         markdown__files = ""
         for file_path, file_contents in files_in_repo.items():
-            markdown__file = f"""
+            if repo_filter.hide_file_contents:
+                markdown__file = f"""
+        - {file_path}"""
+            else:
+                markdown__file = f"""
     ### {file_path}
     
     {file_contents} 

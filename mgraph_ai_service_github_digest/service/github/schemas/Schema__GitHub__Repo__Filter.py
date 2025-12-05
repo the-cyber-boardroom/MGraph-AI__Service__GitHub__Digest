@@ -14,11 +14,14 @@ class Schema__GitHub__Repo__Filter(Schema__GitHub__Repo__Ref):
     filter_starts_with_any : List[str]
 
     # Exclusion filters (take priority over includes)
-    filter_exclude_paths   : List[str]                     # Exclude if path contains any of these
-    filter_exclude_prefixes: List[str]                     # Exclude if starts with any of these
-    filter_exclude_suffixes: List[str]                     # Exclude if ends with any of these
+    filter_exclude_paths   : List[str]                      # Exclude if path contains any of these
+    filter_exclude_prefixes: List[str]                      # Exclude if starts with any of these
+    filter_exclude_suffixes: List[str]                      # Exclude if ends with any of these
 
     # Size controls
-    max_file_size_bytes    : int                           # Skip files larger than this
-    max_content_length     : int                           # Truncate content to this length
-    truncate_patterns      : List[str]                     # Only truncate files matching these patterns (contains)
+    max_file_size_bytes    : int                            # Skip files larger than this
+    max_content_length     : int                            # Truncate content to this length
+    truncate_patterns      : List[str]                      # Only truncate files matching these patterns (contains)
+
+    # Hide files
+    hide_file_contents    : bool                            # Hide files contents and only show the file's path
