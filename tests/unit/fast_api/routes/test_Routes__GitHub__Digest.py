@@ -22,7 +22,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown(self):
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains='')
             )
             markdown = response.body.decode('utf-8')
@@ -33,7 +33,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__with_exclusions(self):                                 # Test exclusion parameters
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains='' ,
                                               filter_exclude_paths=['test,__pycache__'])
             )
@@ -46,7 +46,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__with_exclude_suffixes(self):                           # Test suffix exclusion
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains='' ,
                                               filter_exclude_suffixes=['__init__.py,.pyc'])
             )
@@ -57,7 +57,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__with_exclude_prefixes(self):                           # Test prefix exclusion
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains='' ,
                                               filter_exclude_prefixes=['osbot_utils/testing'] ,
                                               filter_starts_with='osbot_utils')
@@ -68,7 +68,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__with_size_controls(self):                              # Test size control parameters
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains=''   ,
                                               max_file_size_bytes=5000 ,
                                               max_content_length=500)
@@ -83,7 +83,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__with_truncate_patterns(self):                          # Test selective truncation
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains=''  ,
                                               max_content_length=100 ,
                                               truncate_patterns=['test_','_test'])
@@ -95,7 +95,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__with_starts_with_any(self):                            # Test multiple include paths
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains='' ,
                                               filter_starts_with_any=['osbot_utils/helpers/flows','osbot_utils/helpers/duration'] ,
                                               filter_ends_with='.py')
@@ -108,7 +108,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__combined_parameters(self):                             # Test all parameters together
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(
                     filter_contains=''                   ,
                     owner                  = 'owasp-sbot'       ,
@@ -136,7 +136,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__truncation_visible(self):                              # Verify truncation marker appears
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains='' ,
                                               filter_starts_with='osbot_utils/helpers' ,
                                               filter_ends_with='.py'                  ,
@@ -149,7 +149,7 @@ class test_Routes__GitHub__Digest(TestCase):
 
     def test_markdown__comma_parsing(self):                                   # Verify comma-separated lists work
         with self.routes_github__digest as _:
-            response = _.markdown(
+            response = _.markdown__filter(
                 Schema__GitHub__Repo__Filter(filter_contains='' ,
                                               filter_exclude_paths=['test, __pycache__, .git'] ,
                                               filter_exclude_suffixes=['.pyc','.log,.tmp'])

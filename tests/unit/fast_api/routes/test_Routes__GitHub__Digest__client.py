@@ -12,7 +12,7 @@ class test_Routes__GitHub__Digest__client(TestCase):
 
     def test__github_digest__repo_files_in_markdown(self):
         json_data = Schema__GitHub__Repo__Filter().json()
-        response = self.client.post('/github-digest/markdown', json = json_data)
+        response = self.client.post('/github-digest/markdown/filter', json = json_data)
         assert response.status_code == 200
         assert response.headers['content-type'] == 'text/markdown; charset=utf-8'
         assert '### osbot_utils/type_safe/Type_Safe.py\n' in response.text
