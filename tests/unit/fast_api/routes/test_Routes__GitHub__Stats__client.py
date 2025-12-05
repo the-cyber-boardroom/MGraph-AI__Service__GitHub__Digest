@@ -74,6 +74,24 @@ class test_Routes__GitHub__Stats__client(TestCase):
         data = response.json()
         assert len(data) == 10
 
+    # ==================== FILES TABLE VIEW TESTS ====================
+
+    def test__files_by_size_view_table(self):                                               # Test table view endpoint
+        response = self.client.get('/github-stats/files-by-size-view-table',
+                                   params={'limit': 10})
+
+        assert response.status_code == 200
+        assert response.headers['content-type'] == 'text/plain; charset=utf-8'
+
+        text = response.text
+        assert 'Files by Size'  in text
+        assert 'Path'           in text
+        assert 'Size (bytes)'   in text
+        assert '┌'              in text
+        assert '└'              in text
+
+    # ==================== FOLDERS TESTS ====================
+
     def test__folders_by_size(self):
         response = self.client.get('/github-stats/folders-by-size')
 
@@ -118,6 +136,78 @@ class test_Routes__GitHub__Stats__client(TestCase):
         for i in range(len(data) - 1):
             assert data[i]['size_bytes'] >= data[i+1]['size_bytes']
 
+    # ==================== FOLDERS TABLE VIEW TESTS ====================
+
+    def test__folders_by_size_view_table(self):                                             # Test table view endpoint
+        response = self.client.get('/github-stats/folders-by-size-view-table',
+                                   params={'depth': 1, 'limit': 10})
+
+        assert response.status_code == 200
+        assert response.headers['content-type'] == 'text/plain; charset=utf-8'
+
+        text = response.text
+        assert 'Folders by Size' in text
+        assert 'depth=1'         in text
+        assert 'Path'            in text
+        assert 'Files'           in text
+        assert '┌'               in text
+        assert '└'               in text
+
+    def test__folders_by_size_view_table__different_depths(self):                           # Test different depths
+        response_0 = self.client.get('/github-stats/folders-by-size-view-table',
+                                     params={'depth': 0})
+        response_2 = self.client.get('/github-stats/folders-by-size-view-table',
+                                     params={'depth': 2})
+
+        assert response_0.status_code == 200
+        assert response_2.status_code == 200
+
+        assert 'depth=0' in response_0.text
+        assert 'depth=2' in response_2.text
+
+    # ==================== FOLDERS TREE VIEW TESTS ====================
+
+    def test__folders_by_size_view_tree(self):                                              # Test tree view endpoint
+        response = self.client.get('/github-stats/folders-by-size-view-tree',
+                                   params={'max_depth': 2})
+
+        assert response.status_code == 200
+        assert response.headers['content-type'] == 'text/plain; charset=utf-8'
+
+        text = response.text
+        assert '📁'     in text
+        assert 'Total:' in text
+        assert 'files'  in text
+
+    def test__folders_by_size_view_tree__structure(self):                                   # Test tree structure
+        response = self.client.get('/github-stats/folders-by-size-view-tree',
+                                   params={'max_depth': 3})
+
+        assert response.status_code == 200
+        text = response.text
+
+        assert '├── ' in text or '└── ' in text                                             # Tree connectors
+
+    def test__folders_by_size_view_tree__with_sizes(self):                                  # Test with sizes
+        response = self.client.get('/github-stats/folders-by-size-view-tree',
+                                   params={'max_depth': 2, 'show_size': 'true'})
+
+        assert response.status_code == 200
+        text = response.text
+
+        assert 'KB' in text or 'MB' in text or ' B' in text
+
+    def test__folders_by_size_view_tree__without_sizes(self):                               # Test without sizes
+        response = self.client.get('/github-stats/folders-by-size-view-tree',
+                                   params={'max_depth': 2, 'show_size': 'false'})
+
+        assert response.status_code == 200
+        text = response.text
+
+        assert '📁' in text
+
+    # ==================== EXTENSION BREAKDOWN TESTS ====================
+
     def test__extension_breakdown(self):
         response = self.client.get('/github-stats/extension-breakdown')
 
@@ -129,6 +219,29 @@ class test_Routes__GitHub__Stats__client(TestCase):
         py_stats = data['.py']
         assert 'count'       in py_stats
         assert 'total_bytes' in py_stats
+
+    def test__extension_breakdown_view_table(self):                                         # Test table view endpoint
+        response = self.client.get('/github-stats/extension-breakdown-view-table')
+
+        assert response.status_code == 200
+        assert response.headers['content-type'] == 'text/plain; charset=utf-8'
+
+        text = response.text
+        assert 'Extension Breakdown' in text
+        assert 'Extension'           in text
+        assert 'Count'               in text
+        assert '.py'                 in text
+        assert '┌'                   in text
+        assert '└'                   in text
+
+    def test__extension_breakdown_view_table__order_by_count(self):                         # Test order parameter
+        response = self.client.get('/github-stats/extension-breakdown-view-table',
+                                   params={'order': 'count'})
+
+        assert response.status_code == 200
+        assert 'Extension Breakdown' in response.text
+
+    # ==================== FOLDER TREE TESTS ====================
 
     def test__folder_tree(self):
         response = self.client.get('/github-stats/folder-tree')
@@ -154,4 +267,4 @@ class test_Routes__GitHub__Stats__client(TestCase):
                 max_d = max(max_d, count_depth(child, current + 1))
             return max_d
 
-        assert count_depth(data) <= 3 # todo: see if this shouldn't be 2
+        assert count_depth(data) <= 3 # see if it should be 2
