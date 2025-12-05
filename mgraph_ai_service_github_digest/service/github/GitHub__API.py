@@ -1,7 +1,8 @@
 import hashlib
-from typing                                                                              import Dict, Optional
+from typing                                                                              import Dict
 from osbot_utils.type_safe.Type_Safe                                                     import Type_Safe
 from osbot_utils.type_safe.primitives.domains.files.safe_str.Safe_Str__File__Path        import Safe_Str__File__Path
+from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict                    import Type_Safe__Dict
 from osbot_utils.type_safe.type_safe_core.decorators.type_safe                           import type_safe
 from osbot_utils.utils.Http                                                              import url_join_safe
 from osbot_utils.utils.Json                                                              import json_to_str
@@ -10,7 +11,6 @@ from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter import Schema__GitHub__Repo__Filter
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Ref    import Schema__GitHub__Repo__Ref
 from mgraph_ai_service_github_digest.service.shared.Http__Requests                       import Http__Requests
-#from mgraph_ai_service_github_digest.service.cache.MGraph__Service__Cache                import MGraph__Service__Cache, Safe_Str__Cache_Hash
 
 SERVER__API_GITHUB_COM = "https://api.github.com"
 
@@ -18,10 +18,14 @@ SERVER__API_GITHUB_COM = "https://api.github.com"
 #      - it should contain: result, status, duration, cache_id (we might not need duration if that is already captured in the cache_id).
 #      - should it be cache_ids? (since we could have more than one)
 
+cache__repo_zip = Type_Safe__Dict(expected_key_type  = str ,
+                                  expected_value_type= dict)
+
 class GitHub__API(Type_Safe):
     http_request  : Http__Requests                                                         # HTTP client for GitHub API
     #cache_service : MGraph__Service__Cache                                                 # Cache service client
-    cache_enabled : bool                      = False                                       # Enable/disable caching
+    cache_enabled : bool                      = False                                       # todo: add proper integration with cache service | Enable/disable caching
+    cache_repo_zip: bool                      = False                                       # todo: remove this once the cache service is wired in (this is currenly mainly used by the unit/integration tests)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -70,7 +74,8 @@ class GitHub__API(Type_Safe):
         repository_zip      = self.repository__zip(github_repo_ref=github_repo_ref)
         repo_zip_content    = repository_zip.get  ('content')
         if type(repo_zip_content) is bytes:
-            fixed_repo_files_contents = {}
+            fixed_repo_files_contents = Type_Safe__Dict(expected_key_type   = Safe_Str__File__Path,
+                                                        expected_value_type = bytes               )
             repo_files_contents = zip_bytes__files(repo_zip_content)
 
             for file_name, file_contents in repo_files_contents.items():
@@ -86,26 +91,99 @@ class GitHub__API(Type_Safe):
     @type_safe
     def repository__contents__as_strings(self, repo_filter: Schema__GitHub__Repo__Filter) -> Dict:
         repo_files_contents = self.repository__contents__as_bytes(github_repo_ref=repo_filter)
-        contents_as_strings = {}
+        contents_as_strings = Type_Safe__Dict(expected_key_type   = Safe_Str__File__Path,
+                                              expected_value_type = str                 )
+
         if len(repo_files_contents) == 1 and repo_files_contents.get('__error__'):
             return repo_files_contents
-        else:
-            for file_path, file_contents in repo_files_contents.items():
-                try:
-                    if self.path_matches_filter(path=file_path, repo_filter=repo_filter):
-                        contents_as_strings[file_path] = file_contents.decode()
-                except UnicodeDecodeError:
-                    pass
-            return contents_as_strings
 
+        for file_path, file_contents in repo_files_contents.items():
+            try:
+                if not self.path_matches_filter(path=file_path, repo_filter=repo_filter):               # Check path filter first
+                    continue
+
+                if repo_filter.max_file_size_bytes > 0:                                         # Check file size limit
+                    if len(file_contents) > repo_filter.max_file_size_bytes:
+                        continue                                                                        # Skip files exceeding size limit
+
+                content = file_contents.decode()                                                        # Decode content
+
+                if self.should_truncate_file(path=file_path, repo_filter=repo_filter):                  # Apply truncation if needed
+                    content = self.truncate_content(content     = content,
+                                                    max_length  = repo_filter.max_content_length,
+                                                    file_path   = str(file_path))
+
+                contents_as_strings[file_path] = content
+
+            except UnicodeDecodeError:
+                pass  # Skip binary files
+
+        return contents_as_strings
+
+    @type_safe
     def path_matches_filter(self, path       : Safe_Str__File__Path         ,
                                   repo_filter: Schema__GitHub__Repo__Filter
                              ) -> bool:
-        if repo_filter.filter_starts_with and not path.startswith(repo_filter.filter_starts_with):  return False
-        if repo_filter.filter_ends_with   and not path.endswith  (repo_filter.filter_ends_with  ):  return False
-        if repo_filter.filter_contains    and     repo_filter.filter_contains not in path        :  return False
+        path_str = str(path)
+
+        # EXCLUSIONS FIRST (take priority)
+        if repo_filter.filter_exclude_paths:
+            for exclude_pattern in repo_filter.filter_exclude_paths:
+                if exclude_pattern and exclude_pattern in path_str:
+                    return False
+
+        if repo_filter.filter_exclude_prefixes:
+            for exclude_prefix in repo_filter.filter_exclude_prefixes:
+                if exclude_prefix and path_str.startswith(exclude_prefix):
+                    return False
+
+        if repo_filter.filter_exclude_suffixes:
+            for exclude_suffix in repo_filter.filter_exclude_suffixes:
+                if exclude_suffix and path_str.endswith(exclude_suffix):
+                    return False
+
+        # INCLUSIONS (original filters - AND logic)
+        if repo_filter.filter_starts_with and not path_str.startswith(str(repo_filter.filter_starts_with)):
+            return False
+        if repo_filter.filter_ends_with and not path_str.endswith(str(repo_filter.filter_ends_with)):
+            return False
+        if repo_filter.filter_contains and str(repo_filter.filter_contains) not in path_str:
+            return False
+
+        # Multiple include paths (OR logic)
+        if repo_filter.filter_starts_with_any:
+            if not any(path_str.startswith(prefix) for prefix in repo_filter.filter_starts_with_any if prefix):
+                return False
 
         return True
+
+    @type_safe
+    def should_truncate_file(self, path       : Safe_Str__File__Path,
+                                   repo_filter: Schema__GitHub__Repo__Filter
+                              ) -> bool:
+        """Check if file matches truncation patterns (or truncate all if no patterns specified)"""
+        if not repo_filter.max_content_length:
+            return False
+
+        if not repo_filter.truncate_patterns:
+            return True  # Truncate all files if no specific patterns
+
+        path_str = str(path)
+        return any(pattern in path_str for pattern in repo_filter.truncate_patterns if pattern)
+
+    @type_safe
+    def truncate_content(self, content    : str,
+                               max_length : int,
+                               file_path  : str
+                          ) -> str:
+        """Truncate content and add marker if needed"""
+        if len(content) <= max_length:
+            return content
+
+        remaining_bytes = len(content) - max_length
+        truncated = content[:max_length]
+        marker = f"\n\n... [TRUNCATED: {remaining_bytes:,} bytes remaining in {file_path}] ..."
+        return truncated + marker
 
     @type_safe
     def repository__zip(self, github_repo_ref : Schema__GitHub__Repo__Ref  ,                # Repository reference
@@ -154,8 +232,13 @@ class GitHub__API(Type_Safe):
 
     def _fetch_repository_zip_from_github(self, github_repo_ref: Schema__GitHub__Repo__Ref  # Repository to fetch
                                           ) -> dict:                                         # Returns GitHub response
-        path = self.path__repo_ref(github_repo_ref)
-        return self.http_request.get(path)
+        path     = self.path__repo_ref(github_repo_ref)
+        repo_zip = cache__repo_zip.get(path, None)
+        if repo_zip is None:
+            repo_zip = self.http_request.get(path)
+            cache__repo_zip[path] = repo_zip
+        return repo_zip
+
 
     def _generate_cache_key(self, github_repo_ref: Schema__GitHub__Repo__Ref                # Repository reference
                             ) -> str:                                                        # Returns cache key string

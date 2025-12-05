@@ -1,5 +1,6 @@
-from unittest                                import TestCase
-from tests.unit.Service__Fast_API__Test_Objs import setup__service_fast_api_test_objs, TEST_API_KEY__NAME, TEST_API_KEY__VALUE
+from unittest                                                                            import TestCase
+from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter import Schema__GitHub__Repo__Filter
+from tests.unit.Service__Fast_API__Test_Objs                                             import setup__service_fast_api_test_objs, TEST_API_KEY__NAME, TEST_API_KEY__VALUE
 
 
 class test_Routes__GitHub__Digest__client(TestCase):
@@ -10,7 +11,8 @@ class test_Routes__GitHub__Digest__client(TestCase):
             cls.client.headers[TEST_API_KEY__NAME] = TEST_API_KEY__VALUE        # todo: move this to the setup__service_fast_api_test_objs
 
     def test__github_digest__repo_files_in_markdown(self):
-        response = self.client.get('/github-digest/repo-files-in-markdown')
+        json_data = Schema__GitHub__Repo__Filter().json()
+        response = self.client.post('/github-digest/markdown', json = json_data)
         assert response.status_code == 200
         assert response.headers['content-type'] == 'text/markdown; charset=utf-8'
-        assert '### osbot_utils/__init__.py' in response.text
+        assert '### osbot_utils/type_safe/Type_Safe.py\n' in response.text

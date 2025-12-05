@@ -25,8 +25,8 @@ class Service__Fast_API(Serverless__Fast_API):
         return self
 
     def setup_routes(self):
+        self.add_routes(Routes__GitHub__Digest     )
+        self.add_routes(Routes__Threat_Intelligence)
+        self.add_routes(Routes__GitHub__API        )
         self.add_routes(Routes__Info               )
         self.add_routes(Routes__Set_Cookie         )
-        self.add_routes(Routes__GitHub__Digest     )
-        self.add_routes(Routes__GitHub__API        )
-        self.add_routes(Routes__Threat_Intelligence)

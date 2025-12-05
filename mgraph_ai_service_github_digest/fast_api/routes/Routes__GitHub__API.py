@@ -1,9 +1,9 @@
+from mgraph_ai_service_github_digest.config                                                     import GIT_HUB__API__DEFAULT__REPO_OWNER, GIT_HUB__API__DEFAULT__REPO_NAME, GIT_HUB__API__DEFAULT__REF
 from osbot_fast_api.api.routes.Fast_API__Routes                                                 import Fast_API__Routes
 from osbot_utils.type_safe.primitives.domains.files.safe_str.Safe_Str__File__Path               import Safe_Str__File__Path
 from osbot_utils.type_safe.primitives.domains.git.github.safe_str.Safe_Str__GitHub__Repo_Name   import Safe_Str__GitHub__Repo_Name
 from osbot_utils.type_safe.primitives.domains.git.github.safe_str.Safe_Str__GitHub__Repo_Owner  import Safe_Str__GitHub__Repo_Owner
 from osbot_utils.type_safe.primitives.domains.git.safe_str.Safe_Str__Git__Ref                   import Safe_Str__Git__Ref
-from osbot_utils.utils.Misc                                                                     import date_time_now
 from mgraph_ai_service_github_digest.service.github.GitHub__API                                 import GitHub__API
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo                import Schema__GitHub__Repo
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter        import Schema__GitHub__Repo__Filter
@@ -20,13 +20,6 @@ ROUTES_PATHS__GIT_HUB__API = [f'/{TAG__GITHUB_API}/apis-available'         ,
                               #f'/{TAG__GITHUB_API}/repository-refresh-cache',               # New endpoint for cache refresh
                               #f'/{TAG__GITHUB_API}/cache-status'           ,               # New endpoint for cache status
                               ]
-
-GIT_HUB__API__DEFAULT__REPO_OWNER         = 'owasp-sbot'
-GIT_HUB__API__DEFAULT__REPO_NAME          = 'OSBot-Utils'
-GIT_HUB__API__DEFAULT__REF                = 'main'
-GIT_HUB__API__DEFAULT__FILTER_STARTS_WITH = 'osbot_utils'
-GIT_HUB__API__DEFAULT__FILTER_CONTAINS    = ''
-GIT_HUB__API__DEFAULT__FILTER_ENDS_WITH   = '.py'
 
 class Routes__GitHub__API(Fast_API__Routes):
     tag        : str         = TAG__GITHUB_API

@@ -12,3 +12,11 @@ CACHE_NAMESPACE           = os.getenv('CACHE_NAMESPACE'    , 'github-digest'    
 CACHE_STRATEGY            = os.getenv('CACHE_STRATEGY'     , 'temporal_latest'           )    # Storage strategy
 CACHE_ENABLED             = os.getenv('CACHE_ENABLED'      , 'true').lower() == 'true'        # Enable/disable caching
 CACHE_TTL_HOURS           = int(os.getenv('CACHE_TTL_HOURS', '24'))                         # Cache TTL in hours
+
+
+GIT_HUB__API__DEFAULT__REPO_OWNER         = 'owasp-sbot'
+GIT_HUB__API__DEFAULT__REPO_NAME          = 'OSBot-Utils'
+GIT_HUB__API__DEFAULT__REF                = 'main'
+GIT_HUB__API__DEFAULT__FILTER_STARTS_WITH = 'osbot_utils'
+GIT_HUB__API__DEFAULT__FILTER_CONTAINS    = 'type_safe'
+GIT_HUB__API__DEFAULT__FILTER_ENDS_WITH   = '.py'
