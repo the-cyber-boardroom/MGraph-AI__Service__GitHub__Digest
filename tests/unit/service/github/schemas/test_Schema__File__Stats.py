@@ -3,6 +3,8 @@ from osbot_utils.type_safe.Type_Safe                                            
 from osbot_utils.type_safe.primitives.core.Safe_UInt                                    import Safe_UInt
 from osbot_utils.type_safe.primitives.domains.files.safe_str.Safe_Str__File__Name import Safe_Str__File__Name
 from osbot_utils.type_safe.primitives.domains.files.safe_str.Safe_Str__File__Path       import Safe_Str__File__Path
+from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict import Type_Safe__Dict
+from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__List import Type_Safe__List
 from osbot_utils.utils.Objects                                                          import base_classes
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__File__Stats         import Schema__File__Stats
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__Folder__Stats       import Schema__Folder__Stats
@@ -62,7 +64,7 @@ class test_Schema__Folder__Stats(TestCase):
             assert type(_.file_count)       is Safe_UInt
             assert type(_.direct_file_count) is Safe_UInt
             assert type(_.subfolder_count)  is Safe_UInt
-            assert type(_.extensions)       is list
+            assert type(_.extensions)       is Type_Safe__List
 
     def test__init__with_values(self):
         with Schema__Folder__Stats(path              = Safe_Str__File__Path('src/module'),
@@ -104,16 +106,16 @@ class test_Schema__Repo__Stats(TestCase):
 
     def test__init__(self):
         with Schema__Repo__Stats() as _:
-            assert type(_)                   is Schema__Repo__Stats
-            assert base_classes(_)           == [Type_Safe, object]
-            assert type(_.total_files)       is Safe_UInt
-            assert type(_.total_size_bytes)  is Safe_UInt
-            assert type(_.total_folders)     is Safe_UInt
-            assert type(_.files)             is list
-            assert type(_.folders)           is list
-            assert type(_.extensions_summary) is dict
-            assert type(_.max_depth)         is Safe_UInt
-            assert type(_.requested_depth)   is Safe_UInt
+            assert type(_)                    is Schema__Repo__Stats
+            assert base_classes(_)            == [Type_Safe, object]
+            assert type(_.total_files)        is Safe_UInt
+            assert type(_.total_size_bytes)   is Safe_UInt
+            assert type(_.total_folders)      is Safe_UInt
+            assert type(_.files)              is Type_Safe__List
+            assert type(_.folders)            is Type_Safe__List
+            assert type(_.extensions_summary) is Type_Safe__Dict
+            assert type(_.max_depth)          is Safe_UInt
+            assert type(_.requested_depth)    is Safe_UInt
 
     def test__init__with_minimal_values(self):
         with Schema__Repo__Stats(owner            = 'test-owner' ,
