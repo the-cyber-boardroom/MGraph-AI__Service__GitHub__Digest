@@ -1,3 +1,4 @@
+from mgraph_ai_service_github_digest.fast_api.routes.Routes__GitHub__Stats       import Routes__GitHub__Stats
 from osbot_fast_api.api.routes.Routes__Set_Cookie                                import Routes__Set_Cookie
 from osbot_fast_api_serverless.fast_api.Serverless__Fast_API                     import Serverless__Fast_API
 from mgraph_ai_service_github_digest.config                                      import FAST_API__TITLE
@@ -26,6 +27,7 @@ class Service__Fast_API(Serverless__Fast_API):
 
     def setup_routes(self):
         self.add_routes(Routes__GitHub__Digest     )
+        self.add_routes(Routes__GitHub__Stats      )
         self.add_routes(Routes__Threat_Intelligence)
         self.add_routes(Routes__GitHub__API        )
         self.add_routes(Routes__Info               )
