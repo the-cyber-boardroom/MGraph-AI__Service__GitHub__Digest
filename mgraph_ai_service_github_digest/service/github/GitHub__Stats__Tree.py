@@ -1,6 +1,6 @@
 from typing                                                                                 import List
 from osbot_utils.type_safe.Type_Safe                                                        import Type_Safe
-from osbot_utils.type_safe.primitives.core.Safe_UInt import Safe_UInt
+from osbot_utils.type_safe.primitives.core.Safe_UInt                                        import Safe_UInt
 from osbot_utils.type_safe.type_safe_core.decorators.type_safe                              import type_safe
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__Repo__Stats             import Schema__Repo__Stats
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__Folder__Stats           import Schema__Folder__Stats

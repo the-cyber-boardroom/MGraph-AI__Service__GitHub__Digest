@@ -1,7 +1,7 @@
 from unittest                                                               import TestCase
 from osbot_fast_api.api.routes.Fast_API__Routes                             import Fast_API__Routes
 from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
-from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict import Type_Safe__Dict
+from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict       import Type_Safe__Dict
 from osbot_utils.utils.Objects                                              import base_classes
 from starlette.responses                                                    import PlainTextResponse
 from mgraph_ai_service_github_digest.fast_api.routes.Routes__GitHub__Stats  import Routes__GitHub__Stats
@@ -81,9 +81,9 @@ class test_Routes__GitHub__Stats(TestCase):
 
     # ==================== FILES TABLE VIEW TESTS ====================
 
-    def test_files_by_size_view_table(self):                                                # Test table view
+    def test_files_by_size__view__table(self):                                                # Test table view
         with self.routes_github_stats as _:
-            response = _.files_by_size_view_table(limit=10)
+            response = _.files_by_size__view__table(limit=10)
 
             assert type(response)      is PlainTextResponse
             assert response.media_type == 'text/plain'
@@ -96,9 +96,9 @@ class test_Routes__GitHub__Stats(TestCase):
             assert '┌'                 in text                                              # Table border chars
             assert '└'                 in text
 
-    def test_files_by_size_view_table__footer(self):                                        # Test footer in table
+    def test_files_by_size__view__table__footer(self):                                        # Test footer in table
         with self.routes_github_stats as _:
-            response = _.files_by_size_view_table(limit=5)
+            response = _.files_by_size__view__table(limit=5)
             text     = response.body.decode('utf-8')
 
             assert 'Total:'   in text
@@ -144,9 +144,9 @@ class test_Routes__GitHub__Stats(TestCase):
 
     # ==================== FOLDERS TABLE VIEW TESTS ====================
 
-    def test_folders_by_size_view_table(self):                                              # Test table view
+    def test_folders_by_size__view__table(self):                                              # Test table view
         with self.routes_github_stats as _:
-            response = _.folders_by_size_view_table(depth=1, limit=10)
+            response = _.folders_by_size__view__table(depth=1, limit=10)
 
             assert type(response)      is PlainTextResponse
             assert response.media_type == 'text/plain'
@@ -160,10 +160,10 @@ class test_Routes__GitHub__Stats(TestCase):
             assert '┌'                 in text
             assert '└'                 in text
 
-    def test_folders_by_size_view_table__different_depths(self):                            # Test different depths
+    def test_folders_by_size__view__table__different_depths(self):                            # Test different depths
         with self.routes_github_stats as _:
-            response_0 = _.folders_by_size_view_table(depth=0, limit=10)
-            response_2 = _.folders_by_size_view_table(depth=2, limit=10)
+            response_0 = _.folders_by_size__view__table(depth=0, limit=10)
+            response_2 = _.folders_by_size__view__table(depth=2, limit=10)
 
             text_0 = response_0.body.decode('utf-8')
             text_2 = response_2.body.decode('utf-8')
@@ -173,9 +173,9 @@ class test_Routes__GitHub__Stats(TestCase):
 
     # ==================== FOLDERS TREE VIEW TESTS ====================
 
-    def test_folders_by_size_view_tree(self):                                               # Test tree view
+    def test_folders_by_size__view__tree(self):                                               # Test tree view
         with self.routes_github_stats as _:
-            response = _.folders_by_size_view_tree(max_depth=2)
+            response = _.folders_by_size__view__tree(max_depth=2)
 
             assert type(response)      is PlainTextResponse
             assert response.media_type == 'text/plain'
@@ -185,25 +185,25 @@ class test_Routes__GitHub__Stats(TestCase):
             assert 'Total:'           in text
             assert 'files'            in text
 
-    def test_folders_by_size_view_tree__structure(self):                                    # Test tree structure chars
+    def test_folders_by_size__view__tree__structure(self):                                    # Test tree structure chars
         with self.routes_github_stats as _:
-            response = _.folders_by_size_view_tree(max_depth=3)
+            response = _.folders_by_size__view__tree(max_depth=3)
             text     = response.body.decode('utf-8')
 
             assert '├── ' in text or '└── ' in text                                         # Tree connectors
 
-    def test_folders_by_size_view_tree__with_sizes(self):                                   # Test sizes in tree
+    def test_folders_by_size__view__tree__with_sizes(self):                                   # Test sizes in tree
         with self.routes_github_stats as _:
-            response = _.folders_by_size_view_tree(max_depth=2, show_size=True)
+            response = _.folders_by_size__view__tree(max_depth=2, show_size=True)
             text     = response.body.decode('utf-8')
 
             # Should have size info (KB, MB, or B)
             assert 'KB' in text or 'MB' in text or ' B' in text
             assert 'files' in text
 
-    def test_folders_by_size_view_tree__without_sizes(self):                                # Test tree without sizes
+    def test_folders_by_size__view__tree__without_sizes(self):                                # Test tree without sizes
         with self.routes_github_stats as _:
-            response = _.folders_by_size_view_tree(max_depth=2, show_size=False)
+            response = _.folders_by_size__view__tree(max_depth=2, show_size=False)
             text     = response.body.decode('utf-8')
 
             # Still has folder structure
@@ -228,9 +228,9 @@ class test_Routes__GitHub__Stats(TestCase):
             assert 'total_bytes' in py_stats
             assert py_stats['count'] > 0
 
-    def test_extension_breakdown_view_table(self):                                          # Test table view
+    def test_extension_breakdown__view__table(self):                                          # Test table view
         with self.routes_github_stats as _:
-            response = _.extension_breakdown_view_table()
+            response = _.extension_breakdown__view__table()
 
             assert type(response)      is PlainTextResponse
             assert response.media_type == 'text/plain'
@@ -243,9 +243,9 @@ class test_Routes__GitHub__Stats(TestCase):
             assert 'Avg Size'            in text
             assert '.py'                 in text                                            # Python extension
 
-    def test_extension_breakdown_view_table__order_by_count(self):                          # Test order by count
+    def test_extension_breakdown__view__table__order_by_count(self):                          # Test order by count
         with self.routes_github_stats as _:
-            response = _.extension_breakdown_view_table(order='count')
+            response = _.extension_breakdown__view__table(order='count')
             text     = response.body.decode('utf-8')
 
             assert 'Extension Breakdown' in text

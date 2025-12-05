@@ -26,15 +26,18 @@ class GitHub__Digest(Type_Safe):
             if _.max_content_length:
                 patterns = ', '.join(_.truncate_patterns) if _.truncate_patterns else 'all files'
                 size_controls.append(f"   - max_content    : {_.max_content_length:,} chars (applies to: {patterns})")
+
             size_str = '\n'.join(size_controls) if size_controls else '   (none)'
 
-            markdown = f"""# Files from Repo
+            markdown__before = f"""# Files from Repo
      
      - owner: {_.owner}
      - name: {_.name} 
      - ref: {_.ref}
     
-    created at: {date_time_now()}
+    created at: {date_time_now()}"""
+
+            markdown__after = f"""
     
     ## Filtered by:
      - starts_with    : {_.filter_starts_with or '(any)'}
@@ -53,6 +56,7 @@ class GitHub__Digest(Type_Safe):
     Showing {len(files_in_repo)} files that matched the filter(s) 
     
     """
+        markdown__files = ""
         for file_path, file_contents in files_in_repo.items():
             markdown__file = f"""
     ### {file_path}
@@ -60,5 +64,37 @@ class GitHub__Digest(Type_Safe):
     {file_contents} 
     ---
     """
-            markdown += markdown__file
+            markdown__files += markdown__file
+
+        markdown_content = markdown__before + markdown__files + markdown__after
+        text_size        = self.calculate_text_size  (markdown_content)
+        text_tokens      = self.calculate_text_tokens(markdown_content)
+
+        markdown__stats = f"""
+        
+## Output Stats:
+
+   - text_size  : {text_size["formatted"]} ({text_size["bytes"]:,} bytes)')
+   - text_tokens: ~{text_tokens:,} (estimated)')   
+        """
+        markdown = (markdown__before +
+                    markdown__stats  +
+                    markdown__after  +
+                    markdown__files  )
         return markdown
+
+
+
+    def calculate_text_size(self, text: str) -> dict:
+        size_bytes = len(text.encode('utf-8'))
+        if size_bytes >= 1024 * 1024:
+            size_str = f'{size_bytes / (1024*1024):.1f} MB'
+        elif size_bytes >= 1024:
+            size_str = f'{size_bytes / 1024:.1f} KB'
+        else:
+            size_str = f'{size_bytes} B'
+        return {'bytes': size_bytes, 'formatted': size_str}
+
+    def calculate_text_tokens(self, text: str) -> int:
+        # Simple approximation: ~4 chars per token (good enough for most uses)
+        return len(text) // 5

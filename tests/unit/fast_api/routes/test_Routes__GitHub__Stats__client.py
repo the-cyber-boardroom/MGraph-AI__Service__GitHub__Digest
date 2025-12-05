@@ -76,8 +76,8 @@ class test_Routes__GitHub__Stats__client(TestCase):
 
     # ==================== FILES TABLE VIEW TESTS ====================
 
-    def test__files_by_size_view_table(self):                                               # Test table view endpoint
-        response = self.client.get('/github-stats/files-by-size-view-table',
+    def test__files_by_size__view__table(self):                                               # Test table view endpoint
+        response = self.client.get('/github-stats/files-by-size/view/table',
                                    params={'limit': 10})
 
         assert response.status_code == 200
@@ -138,8 +138,8 @@ class test_Routes__GitHub__Stats__client(TestCase):
 
     # ==================== FOLDERS TABLE VIEW TESTS ====================
 
-    def test__folders_by_size_view_table(self):                                             # Test table view endpoint
-        response = self.client.get('/github-stats/folders-by-size-view-table',
+    def test__folders_by_size__view__table(self):                                             # Test table view endpoint
+        response = self.client.get('/github-stats/folders-by-size/view/table',
                                    params={'depth': 1, 'limit': 10})
 
         assert response.status_code == 200
@@ -153,10 +153,10 @@ class test_Routes__GitHub__Stats__client(TestCase):
         assert '┌'               in text
         assert '└'               in text
 
-    def test__folders_by_size_view_table__different_depths(self):                           # Test different depths
-        response_0 = self.client.get('/github-stats/folders-by-size-view-table',
+    def test__folders_by_size__view__table__different_depths(self):                           # Test different depths
+        response_0 = self.client.get('/github-stats/folders-by-size/view/table',
                                      params={'depth': 0})
-        response_2 = self.client.get('/github-stats/folders-by-size-view-table',
+        response_2 = self.client.get('/github-stats/folders-by-size/view/table',
                                      params={'depth': 2})
 
         assert response_0.status_code == 200
@@ -167,8 +167,8 @@ class test_Routes__GitHub__Stats__client(TestCase):
 
     # ==================== FOLDERS TREE VIEW TESTS ====================
 
-    def test__folders_by_size_view_tree(self):                                              # Test tree view endpoint
-        response = self.client.get('/github-stats/folders-by-size-view-tree',
+    def test__folders_by_size__view__tree(self):                                              # Test tree view endpoint
+        response = self.client.get('/github-stats/folders-by-size/view/tree',
                                    params={'max_depth': 2})
 
         assert response.status_code == 200
@@ -179,8 +179,8 @@ class test_Routes__GitHub__Stats__client(TestCase):
         assert 'Total:' in text
         assert 'files'  in text
 
-    def test__folders_by_size_view_tree__structure(self):                                   # Test tree structure
-        response = self.client.get('/github-stats/folders-by-size-view-tree',
+    def test__folders_by_size__view__tree__structure(self):                                   # Test tree structure
+        response = self.client.get('/github-stats/folders-by-size/view/tree',
                                    params={'max_depth': 3})
 
         assert response.status_code == 200
@@ -188,8 +188,8 @@ class test_Routes__GitHub__Stats__client(TestCase):
 
         assert '├── ' in text or '└── ' in text                                             # Tree connectors
 
-    def test__folders_by_size_view_tree__with_sizes(self):                                  # Test with sizes
-        response = self.client.get('/github-stats/folders-by-size-view-tree',
+    def test__folders_by_size__view__tree__with_sizes(self):                                  # Test with sizes
+        response = self.client.get('/github-stats/folders-by-size/view/tree',
                                    params={'max_depth': 2, 'show_size': 'true'})
 
         assert response.status_code == 200
@@ -197,8 +197,8 @@ class test_Routes__GitHub__Stats__client(TestCase):
 
         assert 'KB' in text or 'MB' in text or ' B' in text
 
-    def test__folders_by_size_view_tree__without_sizes(self):                               # Test without sizes
-        response = self.client.get('/github-stats/folders-by-size-view-tree',
+    def test__folders_by_size__view__tree__without_sizes(self):                               # Test without sizes
+        response = self.client.get('/github-stats/folders-by-size/view/tree',
                                    params={'max_depth': 2, 'show_size': 'false'})
 
         assert response.status_code == 200
@@ -220,8 +220,8 @@ class test_Routes__GitHub__Stats__client(TestCase):
         assert 'count'       in py_stats
         assert 'total_bytes' in py_stats
 
-    def test__extension_breakdown_view_table(self):                                         # Test table view endpoint
-        response = self.client.get('/github-stats/extension-breakdown-view-table')
+    def test__extension_breakdown__view__table(self):                                         # Test table view endpoint
+        response = self.client.get('/github-stats/extension-breakdown/view/table')
 
         assert response.status_code == 200
         assert response.headers['content-type'] == 'text/plain; charset=utf-8'
@@ -234,8 +234,8 @@ class test_Routes__GitHub__Stats__client(TestCase):
         assert '┌'                   in text
         assert '└'                   in text
 
-    def test__extension_breakdown_view_table__order_by_count(self):                         # Test order parameter
-        response = self.client.get('/github-stats/extension-breakdown-view-table',
+    def test__extension_breakdown__view__table__order_by_count(self):                         # Test order parameter
+        response = self.client.get('/github-stats/extension-breakdown/view/table',
                                    params={'order': 'count'})
 
         assert response.status_code == 200
