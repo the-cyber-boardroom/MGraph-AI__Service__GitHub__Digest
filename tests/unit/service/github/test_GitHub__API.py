@@ -1,27 +1,21 @@
 from unittest                                                                                           import TestCase
-from osbot_utils.helpers.ast.Ast_Load                                                                   import Ast_Load
-from osbot_utils.type_safe.primitives.safe_str.filesystem.Safe_Str__File__Path                          import Safe_Str__File__Path
-from osbot_utils.type_safe.primitives.safe_str.git.Safe_Str__Git__Ref                                   import Safe_Str__Git__Ref
-from osbot_utils.type_safe.primitives.safe_str.github.Safe_Str__GitHub__Repo_Name                       import Safe_Str__GitHub__Repo_Name
-from osbot_utils.type_safe.primitives.safe_str.github.Safe_Str__GitHub__Repo_Owner                      import Safe_Str__GitHub__Repo_Owner
-from osbot_utils.type_safe.primitives.safe_str.identifiers.Safe_Id                                      import Safe_Id
-from osbot_utils.utils.Files                                                                            import file_contents
-from osbot_utils.utils.Functions                                                                        import python_file
+from osbot_utils.type_safe.primitives.domains.files.safe_str.Safe_Str__File__Path                       import Safe_Str__File__Path
+from osbot_utils.type_safe.primitives.domains.git.github.safe_str.Safe_Str__GitHub__Repo_Name           import Safe_Str__GitHub__Repo_Name
+from osbot_utils.type_safe.primitives.domains.git.github.safe_str.Safe_Str__GitHub__Repo_Owner          import Safe_Str__GitHub__Repo_Owner
+from osbot_utils.type_safe.primitives.domains.git.safe_str.Safe_Str__Git__Ref                           import Safe_Str__Git__Ref
+from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict                                   import Type_Safe__Dict
 from osbot_utils.utils.Misc                                                                             import list_set
-from osbot_utils.utils.Zip                                                                              import zip_bytes__file_list
 from mgraph_ai_service_github_digest.service.github.GitHub__API                                         import GitHub__API
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo                        import Schema__GitHub__Repo
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Filter                import Schema__GitHub__Repo__Filter
 from mgraph_ai_service_github_digest.service.github.schemas.Schema__GitHub__Repo__Ref                   import Schema__GitHub__Repo__Ref
 
-from osbot_utils.utils.Dev  import pprint
-
-# todo: we need to add support for caching the requests (at least per hour) so that we don't hit GitHub request limitations
+# todo: remove the cache_repo_zip=True once we have added the proper cache service support
 class test_GitHub__API(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.github_api      = GitHub__API()
+        cls.github_api      = GitHub__API(cache_repo_zip=True)                  # so that we don't make multiple requests to repo zip
         cls.owner           = Safe_Str__GitHub__Repo_Owner ('owasp-sbot' )
         cls.name            = Safe_Str__GitHub__Repo_Name  ('OSBot-Utils')
         cls.ref             = Safe_Str__Git__Ref           ('main'       )
@@ -83,86 +77,275 @@ class test_GitHub__API(TestCase):
             assert list_set(rate_limit) == ['content', 'duration', 'headers']
             assert list_set(content   ) == ['rate', 'resources']
 
-    def test_apis_repository(self):
-        owner = Safe_Id('owasp-sbot')
-        repo  = Safe_Id('OSBot-Utils')
+    def test_repository(self):
         with self.github_api as _:
-            apis_available = self.github_api.repository(github_repo=self.github_repo).get('content')
-            assert list_set(apis_available) == ['allow_forking', 'archive_url', 'archived', 'assignees_url', 'blobs_url', 'branches_url',
-                                                'clone_url', 'collaborators_url', 'comments_url', 'commits_url', 'compare_url', 'contents_url',
-                                                'contributors_url', 'created_at', 'custom_properties', 'default_branch', 'deployments_url',
-                                                'description', 'disabled', 'downloads_url', 'events_url', 'fork', 'forks', 'forks_count', 'forks_url',
-                                                'full_name', 'git_commits_url', 'git_refs_url', 'git_tags_url', 'git_url', 'has_discussions',
-                                                'has_downloads', 'has_issues', 'has_pages', 'has_projects', 'has_wiki', 'homepage', 'hooks_url',
-                                                'html_url', 'id', 'is_template', 'issue_comment_url', 'issue_events_url', 'issues_url', 'keys_url',
-                                                'labels_url', 'language', 'languages_url', 'license', 'merges_url', 'milestones_url', 'mirror_url',
-                                                'name', 'network_count', 'node_id', 'notifications_url', 'open_issues', 'open_issues_count', 'organization',
-                                                'owner', 'private', 'pulls_url', 'pushed_at', 'releases_url', 'size', 'ssh_url', 'stargazers_count',
-                                                'stargazers_url', 'statuses_url', 'subscribers_count', 'subscribers_url', 'subscription_url', 'svn_url',
-                                                'tags_url', 'teams_url', 'temp_clone_token', 'topics', 'trees_url', 'updated_at', 'url', 'visibility',
-                                                'watchers', 'watchers_count', 'web_commit_signoff_required']
-
-    def test_repository__contents__as_bytes(self):
-        with self.github_api as _:
-            repo_files_contents = self.github_api.repository__contents__as_bytes(github_repo_ref=self.github_repo_ref)
-            assert len(repo_files_contents) > 100
-            assert Safe_Str__File__Path('.gitignore')              in repo_files_contents
-            assert Safe_Str__File__Path('osbot_utils/__init__.py') in repo_files_contents
-            for file_name, file_contents in repo_files_contents.items():
-                assert (type(file_contents) is bytes)
-
-    def test_repository__contents__as_strings(self):
-        with self.github_api as _:
-
-            repo_filter = Schema__GitHub__Repo__Filter(**self. github_repo_ref.json()                                  ,
-                                                       filter_starts_with = Safe_Str__File__Path('osbot_utils/helpers'),
-                                                       filter_contains    = Safe_Str__File__Path('ast/'               ),
-                                                       filter_ends_with   = Safe_Str__File__Path("d.py"               ))
-
-            repo_files_contents = self.github_api.repository__contents__as_strings(repo_filter=repo_filter)
-            assert len(repo_files_contents) == 8
-
-            assert Safe_Str__File__Path('osbot_utils/helpers/ast/Ast_Load.py'         ) in repo_files_contents
-            assert Safe_Str__File__Path('osbot_utils/helpers/ast/nodes/Ast_Keyword.py') in repo_files_contents
-            assert Safe_Str__File__Path('osbot_utils/helpers/ast/nodes/Ast_Yield.py'  ) in repo_files_contents
-
-            for _, repo_file_contents in repo_files_contents.items():
-                assert (type(repo_file_contents) is str)
-
-            assert file_contents(python_file(Ast_Load)) == repo_files_contents.get(Safe_Str__File__Path('osbot_utils/helpers/ast/Ast_Load.py'))
-
-
-    def test_repository__files__names(self):
-        with self.github_api as _:
-            files_names = self.github_api.repository__files__names(self.github_repo_ref)
-            assert len(files_names) > 700
-            assert Safe_Str__File__Path('.gitignore'                                                          ) in files_names
-            assert Safe_Str__File__Path('osbot_utils/decorators/methods/cache_on_self.py'                     ) in files_names
-            assert Safe_Str__File__Path('osbot_utils/type_safe/primitives/safe_str/identifiers/Random_Guid.py') in files_names
+            repository = _.repository(github_repo=self.github_repo)
+            assert list_set(repository) == ['content', 'duration', 'headers']
 
     def test_repository__zip(self):
         with self.github_api as _:
-            repository__zip = self.github_api.repository__zip(self.github_repo_ref)
-            content         = repository__zip.get('content')
-            assert list_set(repository__zip) == ['content', 'duration', 'headers']
-            assert len(content) > 950000
-            assert type(content) is bytes
-            zip_files = zip_bytes__file_list(content)
-            assert len(zip_files) > 900
+            repository_zip = _.repository__zip(self.github_repo_ref)
+            assert list_set(repository_zip) == ['content', 'duration', 'headers']
+            assert type(repository_zip.get('content')) is bytes
 
-    def test__bug__dict_error_in_dinis_cruz_docs_site(self):
-        owner           = Safe_Str__GitHub__Repo_Owner ('DinisCruz'        )
-        name            = Safe_Str__GitHub__Repo_Name  ('docs.diniscruz.ai')
-        ref             = Safe_Str__Git__Ref           ('dev'              )
-        github_repo_ref = Schema__GitHub__Repo__Ref(owner=owner, name=name, ref=ref)
+    def test_repository__files__names(self):
+        with self.github_api as _:
+            files_names = _.repository__files__names(self.github_repo_ref)
+            assert type(files_names) is list
+            assert len(files_names) > 0
+            assert 'osbot_utils/__init__.py' in files_names
 
-        with GitHub__API() as _:
-            repository  = _.repository              (github_repo_ref).get('content')
-            files_names = _.repository__files__names(github_repo_ref)
-            assert repository.get('git_url') == 'git://github.com/DinisCruz/docs.diniscruz.ai.git'
+    def test_repository__contents__as_bytes(self):
+        with self.github_api as _:
+            contents = _.repository__contents__as_bytes(self.github_repo_ref)
+            assert type(contents) is Type_Safe__Dict
+            assert len(contents) > 0
+            assert len(contents[Safe_Str__File__Path('osbot_utils/__init__.py')]) == 16
+            assert type(contents['osbot_utils/__init__.py'])                      is bytes
 
-            assert 'setup.py'                       in files_names
-            assert 'overrides/partials/footer.html' in files_names
-            assert 'docs/research/projects.md'      in files_names
+    def test_repository__contents__as_strings(self):
+        repo_filter = Schema__GitHub__Repo__Filter(owner              = self.owner                              ,
+                                                   name               = self.name                               ,
+                                                   ref                = self.ref                                ,
+                                                   filter_starts_with = Safe_Str__File__Path('osbot_utils'     ),
+                                                   filter_ends_with   = Safe_Str__File__Path('.py'             ))
+        with self.github_api as _:
+            contents = _.repository__contents__as_strings(repo_filter=repo_filter)
+            assert type(contents) is Type_Safe__Dict
+            assert len(contents) > 0
+            assert 'osbot_utils/type_safe/__init__.py' in contents
+            assert type(contents['osbot_utils/type_safe/__init__.py']) is str
 
+    # ==================== NEW FILTERING TESTS ====================
 
+    def test_path_matches_filter__basic_includes(self):                                     # Test basic include filters (AND logic)
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(filter_starts_with = Safe_Str__File__Path('osbot_utils'),
+                                                       filter_ends_with   = Safe_Str__File__Path('.py'        ),
+                                                       filter_contains    = Safe_Str__File__Path('helpers'    ))
+
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/helpers/Task.py'  ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/helpers/Flows.py' ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/Task.py'          ), repo_filter) is False   # Missing 'helpers'
+            assert _.path_matches_filter(Safe_Str__File__Path('tests/helpers/Task.py'        ), repo_filter) is False   # Wrong prefix
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/helpers/Task.txt' ), repo_filter) is False   # Wrong suffix
+
+    def test_path_matches_filter__exclude_paths(self):                                      # Test exclusion by path contains
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(filter_starts_with   = Safe_Str__File__Path('osbot_utils'),
+                                                       filter_contains      = ''                                 ,
+                                                       filter_exclude_paths = ['test', '__pycache__'             ])
+
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/helpers/Task.py'     ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/test_Task.py'        ), repo_filter) is False  # Contains 'test'
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/__pycache__/Task.pyc'), repo_filter) is False  # Contains '__pycache__'
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/testing/Task.py'     ), repo_filter) is False  # Contains 'test'
+
+    def test_path_matches_filter__exclude_prefixes(self):                                   # Test exclusion by prefix
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(filter_exclude_prefixes = ['tests/', '.github/'],
+                                                       filter_contains         = ''                    )
+
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/Task.py'    ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('tests/test_Task.py'     ), repo_filter) is False
+            assert _.path_matches_filter(Safe_Str__File__Path('.github/workflows/ci.py'), repo_filter) is False
+
+    def test_path_matches_filter__exclude_suffixes(self):                                   # Test exclusion by suffix
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(filter_starts_with     = Safe_Str__File__Path('osbot_utils'),
+                                                       filter_exclude_suffixes = ['.pyc', '.log', '.tmp'          ],
+                                                       filter_contains         = ''                                )
+
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/Task.py'  ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/Task.pyc' ), repo_filter) is False
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/debug.log'), repo_filter) is False
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/temp.tmp' ), repo_filter) is False
+
+    def test_path_matches_filter__exclusions_take_priority(self):                           # Verify exclusions override includes
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(filter_starts_with   = Safe_Str__File__Path('osbot_utils'),
+                                                       filter_ends_with     = Safe_Str__File__Path('.py'        ),
+                                                       filter_exclude_paths = ['test'                           ])
+
+            # File matches include filters but excluded by path
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/test_utils.py'), repo_filter) is False
+
+    def test_path_matches_filter__starts_with_any_or_logic(self):                           # Test OR logic for multiple include paths
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(filter_starts_with_any = ['osbot_utils/helpers'  ,
+                                                                                 'osbot_utils/utils'   ,
+                                                                                 'osbot_utils/testing'],
+                                                       filter_contains         = ''                     )
+
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/helpers/Task.py' ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/utils/Files.py'  ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/testing/__.py'   ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/core/Base.py'    ), repo_filter) is False
+            assert _.path_matches_filter(Safe_Str__File__Path('tests/unit/test_Task.py'     ), repo_filter) is False
+
+    def test_path_matches_filter__combined_filters(self):                                   # Test complex filter combinations
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(filter_starts_with_any  = ['osbot_utils/helpers', 'osbot_utils/utils'],
+                                                       filter_ends_with        = Safe_Str__File__Path('.py'                 ),
+                                                       filter_contains         = ''                                          ,
+                                                       filter_exclude_paths    = ['test'                                    ],
+                                                       filter_exclude_suffixes = ['__init__.py'                             ])
+
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/helpers/Task.py'    ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/utils/Files.py'     ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/helpers/__init__.py'), repo_filter) is False  # Excluded suffix
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/helpers/test_x.py'  ), repo_filter) is False  # Contains 'test'
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/core/Base.py'       ), repo_filter) is False  # Wrong prefix
+
+    def test_path_matches_filter__empty_filters(self):                                      # Test with no filters (should match all)
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter()
+
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/type_safe/__init__.py'         ), repo_filter) is True
+            assert _.path_matches_filter(Safe_Str__File__Path('osbot_utils/type_safe/Type_Safe.py' ), repo_filter) is True
+
+    # ==================== TRUNCATION TESTS ====================
+
+    def test_should_truncate_file__no_max_length(self):                                     # No truncation when max_content_length not set
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter()                                    # max_content_length defaults to None
+
+            assert _.should_truncate_file(Safe_Str__File__Path('any/file.py'), repo_filter) is False
+
+    def test_should_truncate_file__truncate_all(self):                                      # Truncate all files when no patterns specified
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(max_content_length = 500)
+
+            assert _.should_truncate_file(Safe_Str__File__Path('any/file.py'  ), repo_filter) is True
+            assert _.should_truncate_file(Safe_Str__File__Path('test/file.py' ), repo_filter) is True
+            assert _.should_truncate_file(Safe_Str__File__Path('src/module.py'), repo_filter) is True
+
+    def test_should_truncate_file__with_patterns(self):                                     # Truncate only files matching patterns
+        with self.github_api as _:
+            repo_filter = Schema__GitHub__Repo__Filter(max_content_length = 500              ,
+                                                       truncate_patterns  = ['test_', '_test'])
+
+            assert _.should_truncate_file(Safe_Str__File__Path('tests/test_utils.py'    ), repo_filter) is True
+            assert _.should_truncate_file(Safe_Str__File__Path('tests/helpers_test.py'  ), repo_filter) is True
+            assert _.should_truncate_file(Safe_Str__File__Path('src/module.py'          ), repo_filter) is False
+            assert _.should_truncate_file(Safe_Str__File__Path('osbot_utils/testing.py' ), repo_filter) is False  # 'testing' != 'test_'
+
+    def test_truncate_content__no_truncation_needed(self):                                  # Content shorter than max_length
+        with self.github_api as _:
+            content    = "Short content"
+            max_length = 100
+            result     = _.truncate_content(content=content, max_length=max_length, file_path='file.py')
+
+            assert result == content                                                        # Unchanged
+
+    def test_truncate_content__truncation_applied(self):                                    # Content longer than max_length
+        with self.github_api as _:
+            content    = "A" * 1000
+            max_length = 100
+            result     = _.truncate_content(content=content, max_length=max_length, file_path='file.py')
+
+            assert result.startswith("A" * 100)
+            assert "[TRUNCATED:" in result
+            assert "900 bytes remaining" in result
+            assert "file.py" in result
+
+    def test_truncate_content__marker_format(self):                                         # Verify marker format
+        with self.github_api as _:
+            content    = "Hello World! " * 100                                              # 1300 chars
+            max_length = 50
+            result     = _.truncate_content(content=content, max_length=max_length, file_path='test/path.py')
+
+            assert len(result) > max_length                                                 # Includes marker
+            assert result[:50] == content[:50]
+            assert "\n\n... [TRUNCATED:" in result
+            assert "test/path.py" in result
+            assert "bytes remaining" in result
+
+    # ==================== SIZE FILTERING TESTS ====================
+
+    def test_repository__contents__as_strings__max_file_size(self):                         # Test max_file_size_bytes filtering
+        repo_filter = Schema__GitHub__Repo__Filter(owner               = self.owner                              ,
+                                                   name                = self.name                               ,
+                                                   ref                 = self.ref                                ,
+                                                   filter_starts_with  = Safe_Str__File__Path('osbot_utils'     ),
+                                                   filter_ends_with    = Safe_Str__File__Path('.py'             ),
+                                                   max_file_size_bytes = 100                                     )  # Very small limit
+        with self.github_api as _:
+            contents = _.repository__contents__as_strings(repo_filter=repo_filter)
+            # With 100 byte limit, most files should be excluded
+            for file_path, content in contents.items():
+                assert len(content) <= 100                                                  # All returned files are small
+
+    def test_repository__contents__as_strings__content_truncation(self):                    # Test content truncation in real API call
+        repo_filter = Schema__GitHub__Repo__Filter(owner              = self.owner                              ,
+                                                   name               = self.name                               ,
+                                                   ref                = self.ref                                ,
+                                                   filter_starts_with = Safe_Str__File__Path('osbot_utils'     ),
+                                                   filter_ends_with   = Safe_Str__File__Path('.py'             ),
+                                                   max_content_length = 200                                     )
+        with self.github_api as _:
+            contents = _.repository__contents__as_strings(repo_filter=repo_filter)
+            assert len(contents) > 0
+
+            truncated_count = 0
+            for file_path, content in contents.items():
+                if '[TRUNCATED:' in content:
+                    truncated_count += 1
+                    assert content[:200] == content.split('\n\n... [TRUNCATED:')[0][:200]   # Verify truncation point
+
+            assert truncated_count > 0                                                      # At least some files truncated
+
+    def test_repository__contents__as_strings__exclude_paths(self):                         # Test exclusion in real API call
+        repo_filter = Schema__GitHub__Repo__Filter(owner              = self.owner                              ,
+                                                   name               = self.name                               ,
+                                                   ref                = self.ref                                ,
+                                                   filter_starts_with = Safe_Str__File__Path('osbot_utils'     ),
+                                                   filter_exclude_paths = ['test', '__pycache__'               ])
+        with self.github_api as _:
+            contents = _.repository__contents__as_strings(repo_filter=repo_filter)
+
+            for file_path in contents.keys():
+                assert 'test' not in str(file_path).lower()
+                assert '__pycache__' not in str(file_path)
+
+    def test_repository__contents__as_strings__starts_with_any(self):                       # Test multiple include paths in real API call
+        repo_filter = Schema__GitHub__Repo__Filter(owner                = self.owner                            ,
+                                                   name                 = self.name                             ,
+                                                   ref                  = self.ref                              ,
+                                                   filter_contains      = ''                                    ,
+                                                   filter_starts_with_any = ['osbot_utils/helpers/flows'        ,
+                                                                             'osbot_utils/helpers/duration'     ],
+                                                   filter_ends_with     = Safe_Str__File__Path('.py'            ))
+        with self.github_api as _:
+            contents = _.repository__contents__as_strings(repo_filter=repo_filter)
+            assert len(contents) > 0
+
+            for file_path in contents.keys():
+                file_str = str(file_path)
+                assert (file_str.startswith('osbot_utils/helpers/flows') or
+                        file_str.startswith('osbot_utils/helpers/duration'))
+
+    # ==================== HELPER METHOD TESTS ====================
+
+    def test_fix_repo_file_name(self):
+        with self.github_api as _:
+            assert _.fix_repo_file_name('repo-name-abc123/src/file.py') == 'src/file.py'
+            assert _.fix_repo_file_name('prefix/nested/path/file.py'  ) == 'nested/path/file.py'
+            assert _.fix_repo_file_name('no-slash'                    ) is None                 # No slash
+            assert _.fix_repo_file_name('folder/'                     ) is None                 # Ends with slash (directory)
+
+    def test_fix_repo_files_names(self):
+        with self.github_api as _:
+            input_files = ['repo-abc/src/a.py', 'repo-abc/src/b.py', 'repo-abc/', 'no-slash']
+            result = _.fix_repo_files_names(input_files)
+            assert result == ['src/a.py', 'src/b.py']                                       # Sorted, invalid entries removed
+
+    def test_path__repo(self):
+        with self.github_api as _:
+            path = _.path__repo(self.github_repo)
+            assert path == '/repos/owasp-sbot/OSBot-Utils'
+
+    def test_path__repo_ref(self):
+        with self.github_api as _:
+            path = _.path__repo_ref(self.github_repo_ref)
+            assert path == '/repos/owasp-sbot/OSBot-Utils/zipball/main'

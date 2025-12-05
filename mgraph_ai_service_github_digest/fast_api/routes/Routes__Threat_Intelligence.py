@@ -1,6 +1,6 @@
-from osbot_fast_api.api.routes.Fast_API__Routes                             import Fast_API__Routes
-from osbot_utils.type_safe.primitives.safe_str.web.Safe_Str__IP_Address     import Safe_Str__IP_Address
-from mgraph_ai_service_github_digest.service.threat_intelligence.IP_Data    import IP_Data
+from osbot_fast_api.api.routes.Fast_API__Routes                                             import Fast_API__Routes
+from osbot_utils.type_safe.primitives.domains.network.safe_str.Safe_Str__IP_Address         import Safe_Str__IP_Address
+from mgraph_ai_service_github_digest.service.threat_intelligence.IP_Data                    import IP_Data
 
 ROUTES_PATHS__THREAT_INTELLIGENCE = ['/threat-intelligence/ip-address-details']
 

@@ -1,9 +1,9 @@
 import requests
-from typing                                                      import Dict
-from osbot_utils.helpers.duration.decorators.capture_duration    import capture_duration
-from osbot_utils.type_safe.Type_Safe                             import Type_Safe
-from osbot_utils.type_safe.primitives.safe_str.web.Safe_Str__Url import Safe_Str__Url
-from osbot_utils.utils.Http                                      import url_join_safe
+from typing                                                               import Dict
+from osbot_utils.helpers.duration.decorators.capture_duration             import capture_duration
+from osbot_utils.type_safe.Type_Safe                                      import Type_Safe
+from osbot_utils.type_safe.primitives.domains.web.safe_str.Safe_Str__Url  import Safe_Str__Url
+from osbot_utils.utils.Http                                               import url_join_safe
 
 
 class Http__Requests(Type_Safe):
